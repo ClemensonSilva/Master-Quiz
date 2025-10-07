@@ -1,0 +1,12 @@
+services:
+  db-user:
+    image: mysql:8.0
+    restart: unless-stopped
+    container_name: quiz-api-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: user
+    ports:
+      - "3306:3306"
