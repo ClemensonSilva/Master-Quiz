@@ -18,4 +18,9 @@ public class Alternativa {
     private Long id;
     @Column(nullable = false, length = 100)
     private String descricao;
+
+    // muitas alternativas estao associadas a uma questao
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "questao_id")
+    private Questao questao;
 }

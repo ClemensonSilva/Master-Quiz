@@ -21,8 +21,8 @@ public class Resposta {
     @JoinColumn(nullable = false, name = "questao_id")
     private Questao questao;
 
-    @ManyToOne
-    @JoinColumn(nullable = false,name = "alternativa_escolhida_id")
+    @OneToOne
+    @JoinColumn(nullable = false,name = "alternativa_escolhida_id", referencedColumnName = "id")
     private Alternativa alternativaEscolhida;
 
     @ManyToOne
