@@ -12,6 +12,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 
+@Table(name = "tb_resposta")
 public class Resposta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

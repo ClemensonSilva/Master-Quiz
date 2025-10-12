@@ -10,11 +10,13 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-
+@Table(name = "tb_questao")
 public class Questao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(length = 100, nullable = false)
+    private  String descricao;
 
     // uma questao possui apenas uma alternativa correta
     @OneToOne(fetch = FetchType.LAZY)
@@ -23,4 +25,8 @@ public class Questao {
 
     @OneToMany(mappedBy = "questao") // uma questao possui muitas alternativas
     private List<Alternativa> alternativas;
+    @ManyToOne(fetch = FetchType.LAZY)
+
+    @JoinColumn(nullable = false, name = "quiz_id")
+    private Quiz quiz;
 }
