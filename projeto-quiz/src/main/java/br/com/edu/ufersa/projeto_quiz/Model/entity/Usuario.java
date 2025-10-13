@@ -18,7 +18,6 @@ public class Usuario {
     @Column(unique = true, nullable = false)
     private String endEmail;
 
-    
     private Set<Disciplina> disciplinas = new HashSet<>();
 
 }
