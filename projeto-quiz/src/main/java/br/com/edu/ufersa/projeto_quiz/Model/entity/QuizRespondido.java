@@ -1,5 +1,6 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
+import br.com.edu.ufersa.projeto_quiz.API.dto.QuizRespondidoDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +32,8 @@ public class QuizRespondido {
 
     @Column(nullable = false)
     private Long pontuacaoFinal ;
-    @Column(nullable = false)
+
+    @Column(nullable = false, name = "data_tentativa")
     private LocalDate dataTentativa;
 
     // o mapeamento é feito a partir do atributo quizRespondido da entidade Resposta
@@ -39,6 +41,17 @@ public class QuizRespondido {
     // ao deletar um quizRespondido do DB, todas as respostas associadas a ele serão removidas do DB
     @OneToMany(mappedBy = "quizRespondido", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Resposta> respostas;
+
+
+    public static QuizRespondido convert(QuizRespondidoDTO qrDTO){
+        QuizRespondido quizRespondido = new QuizRespondido();
+        quizRespondido.setAluno(qrDTO.getAluno());
+        quizRespondido.setQuiz(qrDTO.getQuiz());
+        quizRespondido.setPontuacaoFinal(qrDTO.getPontuacaoFinal());
+        quizRespondido.setDataTentativa(qrDTO.getDataTentativa());
+        quizRespondido.setRespostas(qrDTO.getRespostas());
+        return quizRespondido;
+    }
 
     @Override
     public boolean equals(Object o) {
