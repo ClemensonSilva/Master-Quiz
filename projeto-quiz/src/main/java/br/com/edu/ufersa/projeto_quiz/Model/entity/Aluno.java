@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 @Entity
-@DiscriminatorValue("ALUNO")
+@DiscriminatorValue("Aluno")
 public class Aluno extends Usuario{
 
     @ManyToMany
