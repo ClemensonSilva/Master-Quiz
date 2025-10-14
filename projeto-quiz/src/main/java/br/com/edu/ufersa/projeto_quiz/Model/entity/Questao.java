@@ -1,5 +1,6 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
+import br.com.edu.ufersa.projeto_quiz.API.dto.QuestaoDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,4 +32,14 @@ public class Questao {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "quiz_id")
     private Quiz quiz;
+
+    public static Questao convert(QuestaoDTO dto){
+        Questao questao = new Questao();
+        questao.setId(dto.getId());
+        questao.setDescricao(dto.getDescricao());
+        questao.setAlternativaCorreta(dto.getAlternativaCorreta);
+        questao.setAlternativas(dto.getAlternativas());
+        questao.setQuiz(dto.getQuiz());
+        return questao;
+    }
 }
