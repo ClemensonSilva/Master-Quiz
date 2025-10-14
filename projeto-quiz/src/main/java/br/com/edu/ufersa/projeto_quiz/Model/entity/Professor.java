@@ -1,22 +1,20 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import java.util.Set;
 import java.util.HashSet;
 
 @Entity
-@DiscriminatorValue("ALUNO")
-public class Aluno extends Usuario{
+@DiscriminatorValue("PROFESSOR")
+public class Professor extends Usuario{
 
-    @ManyToMany
-    @JoinTable(
-            name = "tb_aluno_disciplina",
-            joinColumns = @JoinColumn(name = "aluno_id"),
-            inverseJoinColumns = @JoinColumn(name = "disciplina_id")
-    )
+    @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL)
     private Set<Disciplina> disciplinas = new HashSet<>();
 
-    public Aluno(){}
+    public  Professor(){}
 
     public Set<Disciplina> getDisciplinas(){
         return disciplinas;
@@ -24,4 +22,5 @@ public class Aluno extends Usuario{
     public void setDisciplinas(Set<Disciplina> disciplinas){
         this.disciplinas = disciplinas;
     }
+
 }
