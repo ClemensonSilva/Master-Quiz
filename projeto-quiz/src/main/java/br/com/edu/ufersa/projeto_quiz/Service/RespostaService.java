@@ -20,6 +20,11 @@ public class RespostaService {
     @Autowired
     public RespostaRepository respostaRepository;
 
+    public RespostaDTO create(RespostaDTO respostaDTO) {
+        Resposta resposta = Resposta.convert(respostaDTO);
+        respostaRepository.save(resposta);
+        return RespostaDTO.convert(resposta);
+    }
     public List<RespostaDTO> todasRespostaQuizRespondido(QuizRespondidoDTO quizRespondidoDTO) {
 
         return respostaRepository.findByQuizRespondido(QuizRespondido.convert(quizRespondidoDTO))
