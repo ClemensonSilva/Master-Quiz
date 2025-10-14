@@ -1,5 +1,6 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
+import br.com.edu.ufersa.projeto_quiz.API.dto.RespostaDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,17 @@ public class Resposta {
 
     @Column(name = "tempo_resposta")
     private Long tempoResposta;
+
+    public static Resposta convert(RespostaDTO respostaDTO) {
+        Resposta resposta = new Resposta();
+        resposta.setId(respostaDTO.getId());
+        resposta.setQuestao(respostaDTO.getQuestao());
+        resposta.setStatusResposta(respostaDTO.isStatusResposta());
+        resposta.setTempoResposta(respostaDTO.getTempoResposta());
+        resposta.setAlternativaEscolhida(respostaDTO.getAlternativaEscolhida());
+        resposta.setQuizRespondido(respostaDTO.getQuizRespondido());
+        return resposta;
+    }
 
     @Override
     public boolean equals(Object o) {
