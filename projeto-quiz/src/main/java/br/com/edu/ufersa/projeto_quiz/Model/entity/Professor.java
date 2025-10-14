@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 @Entity
-@DiscriminatorValue("PROFESSOR")
+@DiscriminatorValue("Professor")
 public class Professor extends Usuario{
 
     @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL)

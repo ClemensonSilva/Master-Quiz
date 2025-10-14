@@ -5,10 +5,11 @@ import org.hibernate.sql.exec.spi.StandardEntityInstanceResolver;
 
 import javax.annotation.processing.Generated;
 import java.util.HashSet;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_usuario")
+@DiscriminatorColumn(name = "tipo_usuario", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "tb_usuarios")
 public abstract class Usuario {
 
@@ -53,4 +54,15 @@ public abstract class Usuario {
         this.email = email;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof Usuario)) { return false;}
+        Usuario usuario = (Usuario) o;
+        return id != null && id.equals(usuario.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }
