@@ -1,6 +1,9 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
+import br.com.edu.ufersa.projeto_quiz.API.dto.AlunoDTO;
 import jakarta.persistence.*;
+import org.springframework.beans.BeanUtils;
+
 import java.util.Set;
 import java.util.HashSet;
 
@@ -17,6 +20,15 @@ public class Aluno extends Usuario{
     private Set<Disciplina> disciplinas = new HashSet<>();
 
     public Aluno(){}
+
+    // nao remover o metodo convert
+
+    public static Aluno convert(AlunoDTO dto){
+        Aluno aluno = new Aluno();
+        BeanUtils.copyProperties(dto, aluno);
+        return aluno;
+    }
+
 //
     public Set<Disciplina> getDisciplinas(){
         return disciplinas;

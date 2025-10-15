@@ -48,7 +48,7 @@ public class QuizRespondidoService {
             questaoDB = questoesMap.get(resposta.getQuestao().getId());
             altCorreta = questaoDB.getAlternativaCorreta();
 
-            // verifica se a alternativaCorreta do DB é igual à alternatia correta do aluno
+            // verALifica se a alternativaCorreta do DB é igual à alternatia correta do aluno
             if( altCorreta!= null && altCorreta.getId().equals(resposta.getAlternativaEscolhida().getId())){
                 resposta.setStatusResposta(true);
                 taxaAcerto+= 1;
