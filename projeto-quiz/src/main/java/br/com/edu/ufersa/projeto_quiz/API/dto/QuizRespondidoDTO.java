@@ -11,6 +11,8 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 @Getter
 @Setter
 @ToString
@@ -20,18 +22,16 @@ public class QuizRespondidoDTO {
     private Long id;
     private Aluno aluno;
     private Quiz quiz;
-    private Long pontuacaoFinal ;
-    private LocalDate dataTentativa;
-    private Set<Resposta> respostas;
+    private Set<RespostaDTO> respostasDTO;
 
     public static QuizRespondidoDTO convert(QuizRespondido qr){
         QuizRespondidoDTO dto = new QuizRespondidoDTO();
         dto.setId(qr.getId());
         dto.setAluno(qr.getAluno());
         dto.setQuiz(qr.getQuiz());
-        dto.setPontuacaoFinal(qr.getPontuacaoFinal());
-        dto.setDataTentativa(qr.getDataTentativa());
-        dto.setRespostas(qr.getRespostas());
+        dto.setRespostasDTO(qr.getRespostas()
+                .stream()
+                .map(resposta -> RespostaDTO.convert(resposta)).collect(Collectors.toSet()));
         return dto;
     }
 

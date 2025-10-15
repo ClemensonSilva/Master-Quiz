@@ -1,5 +1,6 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
+import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,9 @@ public class Disciplina {
     @OneToMany(mappedBy = "disciplina")
     private List<Quiz> quizes;
 
-    // Placeholder até criar a classe Professor
-    @Column(name = "professor", nullable = false, length = 100)
-    private String professor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "professor_id", nullable = false)
+    private Professor professor;
 
     @ManyToMany()
     @JoinTable(
@@ -35,4 +36,14 @@ public class Disciplina {
             inverseJoinColumns = @JoinColumn(name = "aluno_id")
     )
     private Set<Aluno> aluno;
+
+    public static Disciplina convert(DisciplinaDTO dto){
+        Disciplina disciplina = new Disciplina();
+        disciplina.setId(dto.getId());
+        disciplina.setNome(dto.getNome());
+        disciplina.setQuizes(dto.getQuizes());
+        disciplina.setProfessor(dto.getProfessor());
+        disciplina.setAlunos(dto.getAlunos());
+        return disciplina;
+    }
 }
