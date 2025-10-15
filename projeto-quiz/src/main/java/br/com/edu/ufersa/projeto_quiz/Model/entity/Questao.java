@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -37,9 +38,21 @@ public class Questao {
         Questao questao = new Questao();
         questao.setId(dto.getId());
         questao.setDescricao(dto.getDescricao());
-        questao.setAlternativaCorreta(dto.getAlternativaCorreta);
+        questao.setAlternativaCorreta(dto.getAlternativaCorreta());
         questao.setAlternativas(dto.getAlternativas());
         questao.setQuiz(dto.getQuiz());
         return questao;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Questao questao = (Questao) o;
+        return Objects.equals(id, questao.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
