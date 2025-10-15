@@ -41,10 +41,8 @@ public class Resposta {
         Resposta resposta = new Resposta();
         resposta.setId(respostaDTO.getId());
         resposta.setQuestao(respostaDTO.getQuestao());
-        resposta.setStatusResposta(respostaDTO.isStatusResposta());
         resposta.setTempoResposta(respostaDTO.getTempoResposta());
         resposta.setAlternativaEscolhida(respostaDTO.getAlternativaEscolhida());
-        resposta.setQuizRespondido(respostaDTO.getQuizRespondido());
         return resposta;
     }
 

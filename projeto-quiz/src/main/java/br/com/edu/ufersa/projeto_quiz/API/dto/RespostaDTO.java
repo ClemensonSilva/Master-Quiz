@@ -19,8 +19,6 @@ public class RespostaDTO {
     private Long id;
     private Questao questao;
     private Alternativa alternativaEscolhida;
-    private QuizRespondido quizRespondido;
-    private boolean statusResposta;
     private Long tempoResposta;
 
     public  static RespostaDTO convert(Resposta resposta){
@@ -28,9 +26,7 @@ public class RespostaDTO {
         respostaDTO.setId(resposta.getId());
         respostaDTO.setQuestao(resposta.getQuestao());
         respostaDTO.setAlternativaEscolhida(resposta.getAlternativaEscolhida());
-        respostaDTO.setQuizRespondido(resposta.getQuizRespondido());
         respostaDTO.setTempoResposta(resposta.getTempoResposta());
-        respostaDTO.setStatusResposta(resposta.isStatusResposta());// esta diferente devido o uso do lombok
         return respostaDTO;
     }
 }

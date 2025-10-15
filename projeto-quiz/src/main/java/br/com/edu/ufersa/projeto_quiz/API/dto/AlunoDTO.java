@@ -17,6 +17,7 @@ public class AlunoDTO {
     private Long id;
     private String nome;
     private String email;
+
     private Set<Disciplina> disciplinas ;
 
     public static AlunoDTO convert(Aluno aluno){

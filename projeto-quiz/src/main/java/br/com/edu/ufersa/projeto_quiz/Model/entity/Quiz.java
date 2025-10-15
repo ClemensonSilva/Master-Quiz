@@ -21,6 +21,7 @@ public class Quiz {
     @Column(nullable = false, length = 100)
     private String titulo;
 
+    // TODO precisa adicionar um cascadeType all
     @OneToMany(mappedBy = "quiz")
     private Set<Questao> questoes;
 

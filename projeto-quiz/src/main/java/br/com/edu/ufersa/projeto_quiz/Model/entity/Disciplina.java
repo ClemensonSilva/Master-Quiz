@@ -35,7 +35,7 @@ public class Disciplina {
             joinColumns = @JoinColumn(name = "disciplina_id"),
             inverseJoinColumns = @JoinColumn(name = "aluno_id")
     )
-    private Set<Aluno> alunos;
+    private Set<Aluno> aluno;
 
     public static Disciplina convert(DisciplinaDTO dto){
         Disciplina disciplina = new Disciplina();

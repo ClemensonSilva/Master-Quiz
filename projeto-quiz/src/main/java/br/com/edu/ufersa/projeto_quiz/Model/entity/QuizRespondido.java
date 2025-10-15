@@ -1,6 +1,7 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizRespondidoDTO;
+import br.com.edu.ufersa.projeto_quiz.API.dto.RespostaDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 // um QuizRespondido pertence a um único aluno e um aluno possui 0..n QuizesRespondidos
 
@@ -31,7 +34,7 @@ public class QuizRespondido {
     private Quiz quiz;
 
     @Column(nullable = false)
-    private Long pontuacaoFinal ;
+    private Double pontuacaoFinal ;
 
     @Column(nullable = false, name = "data_tentativa")
     private LocalDate dataTentativa;
@@ -47,9 +50,10 @@ public class QuizRespondido {
         QuizRespondido quizRespondido = new QuizRespondido();
         quizRespondido.setAluno(qrDTO.getAluno());
         quizRespondido.setQuiz(qrDTO.getQuiz());
-        quizRespondido.setPontuacaoFinal(qrDTO.getPontuacaoFinal());
-        quizRespondido.setDataTentativa(qrDTO.getDataTentativa());
-        quizRespondido.setRespostas(qrDTO.getRespostas());
+        quizRespondido.setRespostas(qrDTO.getRespostasDTO()
+                .stream()
+                .map(respostaDTO -> Resposta.convert(respostaDTO))
+                .collect(Collectors.toSet()));
         return quizRespondido;
     }
 
