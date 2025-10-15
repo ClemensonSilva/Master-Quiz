@@ -1,6 +1,5 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
-import br.com.edu.ufersa.projeto_quiz.API.dto.AlunoDTO;
 import jakarta.persistence.*;
 import java.util.Set;
 import java.util.HashSet;
@@ -18,15 +17,7 @@ public class Aluno extends Usuario{
     private Set<Disciplina> disciplinas = new HashSet<>();
 
     public Aluno(){}
-
-    public static Aluno convert(AlunoDTO alunoDTO){
-        Aluno aluno = new Aluno();
-        aluno.setId(alunoDTO.getId());
-        aluno.setNome(alunoDTO.getNome());
-        aluno.setEmail(alunoDTO.getEmail());
-        aluno.setDisciplinas(new HashSet<>());
-        return aluno;
-    }
+//
     public Set<Disciplina> getDisciplinas(){
         return disciplinas;
     }
