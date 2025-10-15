@@ -10,7 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.password.PasswordEncoder;
+// import org.springframework.security.crypto.password.PasswordEncoder; // Removido por enquanto
 
 import java.util.List;
 import java.util.Optional;
@@ -20,28 +20,22 @@ import java.util.stream.Collectors;
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final ModelMapper mapper;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper mapper, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper mapper) {
         this.usuarioRepository = usuarioRepository;
         this.mapper = mapper;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public ReturnAlunoDTO criarAluno(@Valid InputAlunoDTO dto) throws DataIntegrityViolationException {
-
         Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(dto.getEmail());
         if (usuarioExistente.isPresent()) {
             throw new DataIntegrityViolationException("Já existe um usuário cadastrado com o mesmo email");
         }
 
-        dto.setSenha(passwordEncoder.encode(dto.getSenha()));
 
         Aluno novoAluno = mapper.map(dto, Aluno.class);
-
         Aluno alunoSalvo = usuarioRepository.save(novoAluno);
-
         return mapper.map(alunoSalvo, ReturnAlunoDTO.class);
     }
 
@@ -51,7 +45,6 @@ public class UsuarioService {
             throw new DataIntegrityViolationException("Já existe um usuário cadastrado com o mesmo email");
         }
 
-        dto.setSenha(passwordEncoder.encode(dto.getSenha()));
         Professor novoProfessor = mapper.map(dto, Professor.class);
         Professor professorSalvo = usuarioRepository.save(novoProfessor);
         return mapper.map(professorSalvo, ReturnProfessorDTO.class);

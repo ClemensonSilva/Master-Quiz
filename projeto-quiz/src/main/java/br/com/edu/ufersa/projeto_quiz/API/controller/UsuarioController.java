@@ -42,6 +42,6 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity<List<ReturnUsuarioDTO>> listarTodos() {
         List<ReturnUsuarioDTO> usuarios = service.listarTodos();
-        return ResponseEntity.ok(usuarios); 
+        return ResponseEntity.ok(usuarios);
     }
 }

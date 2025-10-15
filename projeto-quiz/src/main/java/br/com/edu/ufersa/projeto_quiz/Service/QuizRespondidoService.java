@@ -1,6 +1,6 @@
 package br.com.edu.ufersa.projeto_quiz.Service;
 
-import br.com.edu.ufersa.projeto_quiz.API.dto.AlunoDTO;
+import br.com.edu.ufersa.projeto_quiz.API.dto.ReturnAlunoDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizRespondidoDTO;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.*;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.QuestaoRepository;
@@ -84,9 +84,12 @@ public class QuizRespondidoService {
                  .collect(Collectors.toList());
     }
 
-    public List<QuizRespondidoDTO> quizesRespondidosPorAluno(AlunoDTO alunoDto) {
+    public List<QuizRespondidoDTO> quizesRespondidosPorAluno(ReturnAlunoDTO alunoDto) {
+        Aluno alunoParaBusca = new Aluno();
+        alunoParaBusca.setId(alunoDto.getId()); // Pega o ID do DTO e coloca na entidade
+
         return quizRespondidoRepository
-                .findByAluno(Aluno.convert(alunoDto))
+                .findByAluno(alunoParaBusca) // Usa a nova entidade com o ID
                 .stream()
                 .map(QuizRespondidoDTO::convert)
                 .collect(Collectors.toList());

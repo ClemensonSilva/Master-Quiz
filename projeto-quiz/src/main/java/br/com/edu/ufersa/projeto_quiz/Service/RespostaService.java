@@ -1,8 +1,9 @@
 package br.com.edu.ufersa.projeto_quiz.Service;
 
-import br.com.edu.ufersa.projeto_quiz.API.dto.AlunoDTO;
+
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizRespondidoDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.RespostaDTO;
+import br.com.edu.ufersa.projeto_quiz.API.dto.ReturnAlunoDTO;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.QuizRespondido;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Resposta;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.RespostaRepository;
@@ -39,7 +40,7 @@ public class RespostaService {
                 .collect(Collectors.toList());
     }
     // calculo do tempo medio de resposta do aluno
-    public OptionalDouble tempoMedioRespostaAluno(AlunoDTO alunoDTO ) {
+    public OptionalDouble tempoMedioRespostaAluno(ReturnAlunoDTO alunoDTO) {
             return respostaRepository.findAll().stream()
                     .mapToLong(Resposta::getTempoResposta)
                     .average();
