@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -21,8 +22,7 @@ public class Quiz {
     @Column(nullable = false, length = 100)
     private String titulo;
 
-    // TODO precisa adicionar um cascadeType all
-    @OneToMany(mappedBy = "quiz")
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private Set<Questao> questoes;
 
     @ManyToOne
@@ -36,5 +36,17 @@ public class Quiz {
         quiz.setDisciplina(quiz.getDisciplina());
         quiz.setQuestoes(quiz.getQuestoes());
         return quiz;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Quiz quiz = (Quiz) o;
+        return Objects.equals(id, quiz.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
