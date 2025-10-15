@@ -3,9 +3,14 @@ package br.com.edu.ufersa.projeto_quiz.API.dto;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Alternativa;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Questao;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
+import lombok.*;
 
 import java.util.List;
 
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class QuestaoDTO {
     private Long id;
     private String descricao;
