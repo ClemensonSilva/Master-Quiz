@@ -66,4 +66,56 @@ public class UsuarioService {
     public void deletar(Long id) {
         usuarioRepository.deleteById(id);
     }
+
+    public ReturnUsuarioDTO buscarPorId(Long id) {
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        if (usuario instanceof Professor) {
+            return mapper.map(usuario, ReturnProfessorDTO.class);
+        } else {
+            return mapper.map(usuario, ReturnAlunoDTO.class);
+        }
+    }
+
+    public ReturnAlunoDTO atualizarAluno(Long id, InputAlunoDTO dto) {
+        Usuario usuarioExistente = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado para atualização"));
+
+        if (!(usuarioExistente instanceof Aluno)) {
+            throw new RuntimeException("O ID fornecido não pertence a um Aluno.");
+        }
+
+        Optional<Usuario> usuarioComEmail = usuarioRepository.findByEmail(dto.getEmail());
+        if (usuarioComEmail.isPresent() && !usuarioComEmail.get().getId().equals(id)) {
+            throw new DataIntegrityViolationException("O e-mail informado já está em uso por outro usuário.");
+        }
+
+        usuarioExistente.setNome(dto.getNome());
+        usuarioExistente.setEmail(dto.getEmail());
+
+        Aluno alunoSalvo = (Aluno) usuarioRepository.save(usuarioExistente);
+        return mapper.map(alunoSalvo, ReturnAlunoDTO.class);
+    }
+
+    public ReturnProfessorDTO atualizarProfessor(Long id, InputProfessorDTO dto) {
+        Usuario usuarioExistente = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado para atualização"));
+
+        if (!(usuarioExistente instanceof Professor)) {
+            throw new RuntimeException("O ID fornecido não pertence a um Professor.");
+        }
+
+        Optional<Usuario> usuarioComEmail = usuarioRepository.findByEmail(dto.getEmail());
+        if (usuarioComEmail.isPresent() && !usuarioComEmail.get().getId().equals(id)) {
+            throw new DataIntegrityViolationException("O e-mail informado já está em uso por outro usuário.");
+        }
+
+        usuarioExistente.setNome(dto.getNome());
+        usuarioExistente.setEmail(dto.getEmail());
+
+        Professor professorSalvo = (Professor) usuarioRepository.save(usuarioExistente);
+        return mapper.map(professorSalvo, ReturnProfessorDTO.class);
+    }
+
+
 }

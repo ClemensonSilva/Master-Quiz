@@ -44,4 +44,22 @@ public class UsuarioController {
         List<ReturnUsuarioDTO> usuarios = service.listarTodos();
         return ResponseEntity.ok(usuarios);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ReturnUsuarioDTO> buscarPorId(@PathVariable Long id) {
+        ReturnUsuarioDTO usuario = service.buscarPorId(id);
+        return ResponseEntity.ok(usuario);
+    }
+
+    @PutMapping("/alunos/{id}")
+    public ResponseEntity<ReturnAlunoDTO> atualizarAluno(@PathVariable Long id, @Valid @RequestBody InputAlunoDTO dto) {
+        ReturnAlunoDTO alunoAtualizado = service.atualizarAluno(id, dto);
+        return ResponseEntity.ok(alunoAtualizado);
+    }
+
+    @PutMapping("/professores/{id}")
+    public ResponseEntity<ReturnProfessorDTO> atualizarProfessor(@PathVariable Long id, @Valid @RequestBody InputProfessorDTO dto) {
+        ReturnProfessorDTO professorAtualizado = service.atualizarProfessor(id, dto);
+        return ResponseEntity.ok(professorAtualizado);
+    }
 }
