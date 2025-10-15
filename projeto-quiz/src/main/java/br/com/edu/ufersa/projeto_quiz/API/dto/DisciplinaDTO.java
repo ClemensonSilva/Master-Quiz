@@ -22,11 +22,11 @@ public class DisciplinaDTO {
 
     public static DisciplinaDTO convert(Disciplina disciplina){
         DisciplinaDTO dto = new DisciplinaDTO();
-        dto.setId(disciplina.getid());
+        dto.setId(disciplina.getId());
         dto.setNome(disciplina.getNome());
         dto.setQuizes(disciplina.getQuizes());
         dto.setProfessor(disciplina.getProfessor());
-        dto.setAlunos(disciplina.getAlunos());
+        dto.setAlunos(disciplina.getAluno());
         return dto;
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -43,7 +44,19 @@ public class Disciplina {
         disciplina.setNome(dto.getNome());
         disciplina.setQuizes(dto.getQuizes());
         disciplina.setProfessor(dto.getProfessor());
-        disciplina.setAlunos(dto.getAlunos());
+        disciplina.setAluno(dto.getAlunos());
         return disciplina;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Disciplina that = (Disciplina) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
