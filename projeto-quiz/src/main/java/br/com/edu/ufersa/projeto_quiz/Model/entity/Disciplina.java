@@ -34,5 +34,6 @@ public class Disciplina {
             joinColumns = @JoinColumn(name = "disciplina_id"),
             inverseJoinColumns = @JoinColumn(name = "aluno_id")
     )
-    private Set<Aluno> alunos;
+    // foi mapeada para aluno
+    private Set<Aluno> aluno;
 }

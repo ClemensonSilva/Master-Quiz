@@ -22,8 +22,6 @@ public class QuizRespondidoDTO {
     private Long id;
     private Aluno aluno;
     private Quiz quiz;
-    private Long pontuacaoFinal ;
-    private LocalDate dataTentativa;
     private Set<RespostaDTO> respostasDTO;
 
     public static QuizRespondidoDTO convert(QuizRespondido qr){
@@ -31,8 +29,6 @@ public class QuizRespondidoDTO {
         dto.setId(qr.getId());
         dto.setAluno(qr.getAluno());
         dto.setQuiz(qr.getQuiz());
-        dto.setPontuacaoFinal(qr.getPontuacaoFinal());
-        dto.setDataTentativa(qr.getDataTentativa());
         dto.setRespostasDTO(qr.getRespostas()
                 .stream()
                 .map(resposta -> RespostaDTO.convert(resposta)).collect(Collectors.toSet()));

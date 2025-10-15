@@ -34,7 +34,7 @@ public class QuizRespondido {
     private Quiz quiz;
 
     @Column(nullable = false)
-    private Long pontuacaoFinal ;
+    private Double pontuacaoFinal ;
 
     @Column(nullable = false, name = "data_tentativa")
     private LocalDate dataTentativa;
@@ -50,8 +50,6 @@ public class QuizRespondido {
         QuizRespondido quizRespondido = new QuizRespondido();
         quizRespondido.setAluno(qrDTO.getAluno());
         quizRespondido.setQuiz(qrDTO.getQuiz());
-        quizRespondido.setPontuacaoFinal(qrDTO.getPontuacaoFinal());
-        quizRespondido.setDataTentativa(qrDTO.getDataTentativa());
         quizRespondido.setRespostas(qrDTO.getRespostasDTO()
                 .stream()
                 .map(respostaDTO -> Resposta.convert(respostaDTO))
