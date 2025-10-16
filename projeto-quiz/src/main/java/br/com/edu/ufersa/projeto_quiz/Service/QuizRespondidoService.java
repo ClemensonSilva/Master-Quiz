@@ -3,8 +3,10 @@ package br.com.edu.ufersa.projeto_quiz.Service;
 import br.com.edu.ufersa.projeto_quiz.API.dto.AlunoDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizRespondidoDTO;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.*;
+import br.com.edu.ufersa.projeto_quiz.Model.repository.AlunoRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.QuestaoRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.QuizRespondidoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class QuizRespondidoService {
     private QuizRespondidoRepository quizRespondidoRepository;
     @Autowired
     private QuestaoRepository questaoRepository;
+    @Autowired
+    private AlunoRepository alunoRepository;
 
     public QuizRespondidoDTO createQuiz(QuizRespondidoDTO dto) {
 
@@ -27,6 +31,8 @@ public class QuizRespondidoService {
         QuizRespondido quizRespondido  = QuizRespondido.convert(dto);
         Alternativa altCorreta;
         Double taxaAcerto = 0D;
+        Aluno alunoExistente = alunoRepository.findById(dto.getAluno().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Aluno com ID " + dto.getAluno().getId() + " não encontrado!"));
 
         // Ids das questoes
         Set<Long> questaoId = quizRespondido.getRespostas().stream()
@@ -59,6 +65,8 @@ public class QuizRespondidoService {
 
         // taxa de respostas corretas
         quizRespondido.setPontuacaoFinal((100*taxaAcerto)/quizRespondido.getRespostas().size());
+        quizRespondido.setAluno(alunoExistente);
+
         quizRespondidoRepository.save(quizRespondido);
 
         return QuizRespondidoDTO.convert(quizRespondido);

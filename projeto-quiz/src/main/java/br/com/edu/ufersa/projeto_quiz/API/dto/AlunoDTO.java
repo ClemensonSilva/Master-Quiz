@@ -13,7 +13,7 @@ import org.springframework.beans.BeanUtils;
 @ToString
 @NoArgsConstructor
 public class AlunoDTO {
-    public static  AlunoDTO toDTO(Aluno aluno) {
+    public static  AlunoDTO convert(Aluno aluno) {
         AlunoDTO alunoDTO = new AlunoDTO();
         BeanUtils.copyProperties(aluno, alunoDTO);
         return alunoDTO;

@@ -2,9 +2,11 @@ package br.com.edu.ufersa.projeto_quiz.Service;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTO;
+import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTOResponse;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Disciplina;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Questao;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
+import br.com.edu.ufersa.projeto_quiz.Model.repository.DisciplinaRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,12 +19,14 @@ import java.util.stream.Collectors;
 public class QuizService {
     @Autowired
     QuizRepository repository;
+    @Autowired
+    DisciplinaRepository disciplinaRepository;
 
-    public List<QuizDTO> findAll(){
+    public List<QuizDTOResponse> findAll(){
         List<Quiz> quizes = repository.findAll();
         return quizes
                 .stream()
-                .map(QuizDTO::convert)
+                .map(QuizDTOResponse::convert)
                 .collect(Collectors.toList());
     }
 
@@ -34,7 +38,8 @@ public class QuizService {
     }
 
     public QuizDTO save(QuizDTO quizDTO){
-        Quiz quiz = repository.save(Quiz.convert(quizDTO));
+        Disciplina disciplina = disciplinaRepository.findById(quizDTO.getDisciplinaId()).get();
+        Quiz quiz = repository.save(Quiz.convert(quizDTO, disciplina) );
         return QuizDTO.convert(quiz);
     }
 

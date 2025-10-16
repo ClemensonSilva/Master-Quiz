@@ -1,6 +1,7 @@
 package br.com.edu.ufersa.projeto_quiz.API.controller;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTO;
+import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTOResponse;
 import br.com.edu.ufersa.projeto_quiz.Service.DisciplinaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,13 +16,14 @@ public class DisciplinaController {
     @Autowired
     private DisciplinaService service;
 
-    @GetMapping()
-    public ResponseEntity<List<DisciplinaDTO>> findAll(){
+// TODO implementar os outros controllers dos demais servicos que estao em serviceDisciplica
+   @GetMapping()
+    public ResponseEntity<List<DisciplinaDTOResponse>> findAll(){
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DisciplinaDTO> findById(@PathVariable Long id){
+    public ResponseEntity<DisciplinaDTOResponse> findById(@PathVariable Long id){
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 

@@ -1,6 +1,7 @@
 package br.com.edu.ufersa.projeto_quiz.API.controller;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTO;
+import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTOResponse;
 import br.com.edu.ufersa.projeto_quiz.Service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ public class QuizController {
     private QuizService service;
 
     @GetMapping()
-    public ResponseEntity<List<QuizDTO>> findAll(){
+    public ResponseEntity<List<QuizDTOResponse>> findAll(){
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 

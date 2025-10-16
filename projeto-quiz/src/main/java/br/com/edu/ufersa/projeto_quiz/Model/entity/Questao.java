@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -27,21 +29,25 @@ public class Questao {
     @JoinColumn(name = "alternativa_correta_id")
     private Alternativa alternativaCorreta;
 
-    @OneToMany(mappedBy = "questao") // uma questao possui muitas alternativas
-    private List<Alternativa> alternativas;
+    @OneToMany(mappedBy = "questao", cascade = CascadeType.ALL) // uma questao possui muitas alternativas
+    private List<Alternativa> alternativas = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "quiz_id")
     private Quiz quiz;
 
-    public static Questao convert(QuestaoDTO dto){
+    public static Questao convert(QuestaoDTO dto, Quiz quiz){
         Questao questao = new Questao();
-        questao.setId(dto.getId());
         questao.setDescricao(dto.getDescricao());
-        questao.setAlternativaCorreta(dto.getAlternativaCorreta());
-        questao.setAlternativas(dto.getAlternativas());
-        questao.setQuiz(dto.getQuiz());
+        questao.setAlternativaCorreta(Alternativa.convert(dto.getAlternativaCorreta()));
+        questao.setAlternativas(dto.getAlternativas().stream().map(q -> Alternativa.convert(q)).collect(Collectors.toList()));
+        questao.setQuiz(quiz);
         return questao;
+    }
+
+    public void addAlternativa(Alternativa alternativa) {
+        this.alternativas.add(alternativa);
+        alternativa.setQuestao(this);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
+import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTO;
+import br.com.edu.ufersa.projeto_quiz.API.dto.QuestaoDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,12 +31,16 @@ public class Quiz {
     @JoinColumn(name = "disciplina_id")
     private Disciplina disciplina;
 
-    public static Quiz convert(QuizDTO quizDTO) {
+    public static Quiz convert(QuizDTO quizDTO, Disciplina disciplina, Set<Questao> questoes) {
+        Quiz quiz = convert(quizDTO, disciplina);
+        quiz.setQuestoes(questoes);
+        return quiz;
+    }
+    // para salvar quando as questoes da disciplina nao estiverem criadas ainda
+    public static Quiz convert(QuizDTO quizDTO, Disciplina disciplina) {
         Quiz quiz = new Quiz();
-        quiz.setId(quiz.getId());
-        quiz.setTitulo(quiz.getTitulo());
-        quiz.setDisciplina(quiz.getDisciplina());
-        quiz.setQuestoes(quiz.getQuestoes());
+        quiz.setTitulo(quizDTO.getTitulo());
+        quiz.setDisciplina(disciplina);
         return quiz;
     }
 
