@@ -1,9 +1,13 @@
 package br.com.edu.ufersa.projeto_quiz.Service;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuestaoDTO;
+import br.com.edu.ufersa.projeto_quiz.API.dto.QuestaoDTOResponse;
+import br.com.edu.ufersa.projeto_quiz.Model.entity.Alternativa;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Questao;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.QuestaoRepository;
+import br.com.edu.ufersa.projeto_quiz.Model.repository.QuizRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +19,14 @@ import java.util.stream.Collectors;
 public class QuestaoService {
     @Autowired
     private QuestaoRepository repository;
+    @Autowired
+    private QuizRepository quizRepository;
 
-    public List<QuestaoDTO> findAll(){
+    public List<QuestaoDTOResponse> findAll(){
         List<Questao> questoes = repository.findAll();
         return questoes
                 .stream()
-                .map(QuestaoDTO::convert)
+                .map(QuestaoDTOResponse::convert)
                 .collect(Collectors.toList());
     }
 
@@ -30,9 +36,31 @@ public class QuestaoService {
             return QuestaoDTO.convert(questao.get());
         return null;
     }
-
+    // TODO criar um builder para ajudar na criacao da questao
+    @Transactional
     public QuestaoDTO save(QuestaoDTO questaoDTO){
-        Questao questao = repository.save(Questao.convert(questaoDTO));
+        // verifica se o quiz existe
+        Quiz quiz = quizRepository.findById(questaoDTO.getQuizId())
+                .orElseThrow(() -> new RuntimeException("Quiz não encontrado"));
+        // criacao de uma questao para persistir no DB
+        Questao novaQuestao = new Questao();
+        novaQuestao.setDescricao(questaoDTO.getDescricao());
+        novaQuestao.setQuiz(quiz);
+
+        // associa as alternativas  à questao
+        questaoDTO.getAlternativas().forEach(alternativaDTO -> {
+            Alternativa novaAlternativa = new Alternativa();
+            novaAlternativa.setDescricao(alternativaDTO.getDescricao());
+            novaQuestao.addAlternativa(novaAlternativa);
+        });
+        // mapeia a alternativa correta
+        Alternativa alternativaCorreta = novaQuestao.getAlternativas().stream()
+                .filter(a -> a.getDescricao().equals(questaoDTO.getAlternativaCorreta().getDescricao()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Alternativa correta não encontrada na lista de alternativas"));
+        novaQuestao.setAlternativaCorreta(alternativaCorreta);
+
+        Questao questao = repository.save(novaQuestao);
         return QuestaoDTO.convert(questao);
     }
 

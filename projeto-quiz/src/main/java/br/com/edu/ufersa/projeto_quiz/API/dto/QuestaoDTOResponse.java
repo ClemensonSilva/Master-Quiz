@@ -26,3 +26,4 @@ public class QuestaoDTOResponse {
         dto.setQuiz(QuizDTO.convert(questao.getQuiz()));
         return dto;
     }}
+git commit -m"Implementacao dos metodos de edicao de professor e aluno feitos pelo Bisneto. Além disso, foram feitas mudancas para que os DTOs criados no commit anterior fosse usados pelos seus respectivos controllers e services"

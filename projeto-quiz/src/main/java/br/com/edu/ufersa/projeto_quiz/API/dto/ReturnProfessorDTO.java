@@ -8,4 +8,11 @@ public class ReturnProfessorDTO extends ReturnUsuarioDTO{
     public ReturnProfessorDTO(Professor professor) {
         super(professor);
     }
+
+    public static ReturnProfessorDTO convert(Professor professor) {
+        ReturnProfessorDTO dto = new ReturnProfessorDTO();
+        dto.setId(professor.getId());
+        dto.setNome(professor.getNome());
+        return dto;
+    }
 }

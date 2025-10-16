@@ -1,10 +1,12 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTO;
+import com.fasterxml.jackson.databind.util.BeanUtil;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +25,7 @@ public class Disciplina {
     @Column(nullable = false, length = 100)
     private String nome;
 
-    @OneToMany(mappedBy = "disciplina")
+    @OneToMany(mappedBy = "disciplina",cascade = CascadeType.REMOVE)
     private List<Quiz> quizes;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,11 +42,7 @@ public class Disciplina {
 
     public static Disciplina convert(DisciplinaDTO dto){
         Disciplina disciplina = new Disciplina();
-        disciplina.setId(dto.getId());
-        disciplina.setNome(dto.getNome());
-        disciplina.setQuizes(dto.getQuizes());
-        disciplina.setProfessor(dto.getProfessor());
-        disciplina.setAluno(dto.getAlunos());
+        BeanUtils.copyProperties(dto, disciplina);
         return disciplina;
     }
 

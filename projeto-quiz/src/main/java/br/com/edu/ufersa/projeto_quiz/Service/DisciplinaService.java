@@ -1,13 +1,14 @@
 package br.com.edu.ufersa.projeto_quiz.Service;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTO;
+import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTOResponse;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Aluno;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Disciplina;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Professor;
-import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.DisciplinaRepository;
+import br.com.edu.ufersa.projeto_quiz.Model.repository.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,25 +20,33 @@ import java.util.stream.Collectors;
 public class DisciplinaService {
     @Autowired
     private DisciplinaRepository repository;
+    @Autowired
+    private ProfessorRepository professorRepository;
 
-    public List<DisciplinaDTO> findAll(){
+    public List<DisciplinaDTOResponse> findAll(){
         List<Disciplina> disciplinas = repository.findAll();
+
         return disciplinas
                 .stream()
-                .map(DisciplinaDTO::convert)
+                .map(DisciplinaDTOResponse::convert)
                 .collect(Collectors.toList());
     }
 
-    public DisciplinaDTO findById(long id){
+    public DisciplinaDTOResponse findById(long id){
         Optional<Disciplina> disciplina = repository.findById(id);
         if(disciplina.isPresent())
-            return DisciplinaDTO.convert(disciplina.get());
+            return DisciplinaDTOResponse.convert(disciplina.get());
         return null;
     }
 
     public DisciplinaDTO save(DisciplinaDTO disciplinaDTO){
-        Disciplina disciplina = repository.save(Disciplina.convert(disciplinaDTO));
-        return DisciplinaDTO.convert(disciplina);
+        Professor professor = professorRepository.findById(disciplinaDTO.getProfessorId())
+                .orElseThrow(() -> new DataIntegrityViolationException("Professor nao cadastrado"));
+
+        Disciplina disciplina = Disciplina.convert(disciplinaDTO);
+        disciplina.setProfessor(professor);
+        disciplina = repository.save(disciplina);
+        return disciplinaDTO;
     }
 
     public DisciplinaDTO delete(long id){
