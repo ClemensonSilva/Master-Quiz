@@ -4,7 +4,11 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Aluno;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Disciplina;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Professor;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.beans.BeanUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -13,20 +17,18 @@ import java.util.Set;
 @Setter
 @ToString
 @NoArgsConstructor
+// TODO criar um DisciplinaDTOResponde com os atributos como Professor, list<quiz> e set<alunos>
 public class DisciplinaDTO {
-    private Long id;
+    @NotBlank(message = "A disciplina precisa de um nome definido!")
+    @Size(max = 25, message = "O nome da disciplina deve ter até 25 caracteres!")
     private String nome;
-    private List<Quiz> quizes;
-    private Professor professor;
-    private Set<Aluno> alunos;
+    @NotEmpty(message = "A disciplina precisa de professor associado!")
+    private Long professorId;
 
-    public static DisciplinaDTO convert(Disciplina disciplina){
+    public static DisciplinaDTO convert(Disciplina disciplina) {
         DisciplinaDTO dto = new DisciplinaDTO();
-        dto.setId(disciplina.getId());
         dto.setNome(disciplina.getNome());
-        dto.setQuizes(disciplina.getQuizes());
-        dto.setProfessor(disciplina.getProfessor());
-        dto.setAlunos(disciplina.getAluno());
+        dto.setProfessorId(disciplina.getProfessor().getId());
         return dto;
     }
 }

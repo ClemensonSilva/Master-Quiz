@@ -12,21 +12,17 @@ import java.util.stream.Collectors;
 @Setter
 @ToString
 @NoArgsConstructor
-// Como questao é composta por Alternativas, ao criar uma questao,
-// é obrigatorio criar uma alternativa que será persistida pelo DB
-
-public class QuestaoDTO {
+public class QuestaoDTOResponse {
     private String descricao;
     private AlternativaDTO alternativaCorreta;
     private List<AlternativaDTO> alternativas;
-    private Long quizId;
+    private QuizDTO quiz;
 
-    public static QuestaoDTO convert(Questao questao){
-        QuestaoDTO dto = new QuestaoDTO();
+    public static QuestaoDTOResponse convert(Questao questao){
+        QuestaoDTOResponse dto = new QuestaoDTOResponse();
         dto.setDescricao(questao.getDescricao());
         dto.setAlternativaCorreta(AlternativaDTO.convert(questao.getAlternativaCorreta()));
         dto.setAlternativas(questao.getAlternativas().stream().map(q -> AlternativaDTO.convert(q)).collect(Collectors.toList()));
-        dto.setQuizId(questao.getQuiz().getId());
+        dto.setQuiz(QuizDTO.convert(questao.getQuiz()));
         return dto;
-    }
-}
+    }}
