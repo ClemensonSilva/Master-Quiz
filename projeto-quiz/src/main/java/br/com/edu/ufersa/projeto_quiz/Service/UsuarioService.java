@@ -28,8 +28,8 @@ public class UsuarioService {
     }
 
     public ReturnAlunoDTO criarAluno(@Valid InputAlunoDTO dto) throws DataIntegrityViolationException {
-        Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(dto.getEmail());
-        if (usuarioExistente.isPresent()) {
+        Usuario usuarioExistente = usuarioRepository.findByEmail(dto.getEmail());
+        if (usuarioExistente != null) {
             throw new DataIntegrityViolationException("Já existe um usuário cadastrado com o mesmo email");
         }
 
@@ -40,8 +40,8 @@ public class UsuarioService {
     }
 
     public ReturnProfessorDTO criarProfessor(InputProfessorDTO dto) throws DataIntegrityViolationException {
-        Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(dto.getEmail());
-        if (usuarioExistente.isPresent()) {
+        Usuario usuarioExistente = usuarioRepository.findByEmail(dto.getEmail());
+        if (usuarioExistente != null) {
             throw new DataIntegrityViolationException("Já existe um usuário cadastrado com o mesmo email");
         }
 
@@ -70,8 +70,8 @@ public class UsuarioService {
             throw new RuntimeException("O ID fornecido não pertence a um Aluno.");
         }
 
-        Optional<Usuario> usuarioComEmail = usuarioRepository.findByEmail(dto.getEmail());
-        if (usuarioComEmail.isPresent() && !usuarioComEmail.get().getId().equals(id)) {
+        Usuario usuarioComEmail = usuarioRepository.findByEmail(dto.getEmail());
+        if (usuarioComEmail != null && !usuarioComEmail.getId().equals(id)) {
             throw new DataIntegrityViolationException("O e-mail informado já está em uso por outro usuário.");
         }
 
@@ -90,8 +90,8 @@ public class UsuarioService {
             throw new RuntimeException("O ID fornecido não pertence a um Professor.");
         }
 
-        Optional<Usuario> usuarioComEmail = usuarioRepository.findByEmail(dto.getEmail());
-        if (usuarioComEmail.isPresent() && !usuarioComEmail.get().getId().equals(id)) {
+        Usuario usuarioComEmail = usuarioRepository.findByEmail(dto.getEmail());
+        if (usuarioComEmail!= null && !usuarioComEmail.getId().equals(id)) {
             throw new DataIntegrityViolationException("O e-mail informado já está em uso por outro usuário.");
         }
 
