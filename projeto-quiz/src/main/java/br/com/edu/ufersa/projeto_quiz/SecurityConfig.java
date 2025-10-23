@@ -17,10 +17,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+@Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final PasswordEncoder passwordEncoder;
@@ -49,20 +52,26 @@ public class SecurityConfig {
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
+
+                .addFilterBefore(new LoginFilter("/api/v1/login",authenticationManager),
+                        UsernamePasswordAuthenticationFilter.class)
+
+                .addFilterBefore(new AuthorizationFilter(), BasicAuthenticationFilter.class)
+
                 .authorizeHttpRequests(authorizeRequests ->
+
                         authorizeRequests
-                                .requestMatchers(HttpMethod.POST, "/api/v1/login", "/api/v1/usuarios").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/login", "/api/v1/usuarios/alunos", "/api/v1/usuarios/professores").permitAll()
+                                .requestMatchers(HttpMethod.GET,  "/api/v1/usuarios/alunos", "/api/v1/usuarios/professores").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/h2-console/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .addFilterBefore(new LoginFilter("/api/v1/login",authenticationManager),
-                        UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authenticationManager(authenticationManager)
+
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
                 .headers(headers ->
                         headers.frameOptions(Customizer.withDefaults()).disable() // Desabilita a proteção contra frame options
                 );

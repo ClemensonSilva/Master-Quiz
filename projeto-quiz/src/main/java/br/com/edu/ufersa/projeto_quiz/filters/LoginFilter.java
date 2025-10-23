@@ -1,5 +1,6 @@
 package br.com.edu.ufersa.projeto_quiz.filters;
 
+import br.com.edu.ufersa.projeto_quiz.API.dto.LoginDTO;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Usuario;
 import br.com.edu.ufersa.projeto_quiz.Service.AuthenticationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,13 +23,13 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         super(req -> req.getServletPath().equals(url) && "POST".equalsIgnoreCase(req.getMethod()) );
         setAuthenticationManager(authenticationManager);
     }
-    // pega os dados da requisição e faz a conversao para um objeto Usuario
+    // pega os dados da requisição e faz a conversao para um objeto LoginDTO
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
             throws AuthenticationException, IOException, ServletException {
-            Usuario usuario = new ObjectMapper().readValue(req.getInputStream(), Usuario.class);
+        LoginDTO credenciais = new ObjectMapper().readValue(req.getInputStream(), LoginDTO.class);
         return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(
-                usuario.getEmail(), usuario.getSenha(), Collections.emptyList()));
+                credenciais.getEmail(), credenciais.getSenha(), Collections.emptyList()));
 
     }
 

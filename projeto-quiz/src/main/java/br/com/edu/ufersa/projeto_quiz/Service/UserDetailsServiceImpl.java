@@ -7,7 +7,9 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private   UsuarioRepository usuarioRepository;
@@ -16,11 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email){
         Usuario usuario = usuarioRepository.findByEmail(email);
         if(usuario != null){
-                UserDetails user = new org.springframework.security.core
-                        .userdetails.User(email, usuario.getSenha(),
-                        true, true, true,
-                        true, AuthorityUtils.createAuthorityList("USER"));
-                return user;
+                return usuario;
             } else throw new UsernameNotFoundException("Usuário não encontrado!");
     }
 

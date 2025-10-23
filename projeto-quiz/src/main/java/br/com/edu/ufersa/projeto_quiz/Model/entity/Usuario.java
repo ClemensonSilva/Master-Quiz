@@ -1,9 +1,14 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.sql.exec.spi.StandardEntityInstanceResolver;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.annotation.processing.Generated;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -11,13 +16,15 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_usuario", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "tb_usuarios")
-public abstract class Usuario {
+@Setter
+@Getter
+public abstract class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Chave primária auto incrementada
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String nome;
 
     @Column(unique = true, nullable = false)
@@ -35,33 +42,37 @@ public abstract class Usuario {
         this.nome = nome;
         this.email = email;
     }
+    @Override
+    public abstract Collection<? extends GrantedAuthority> getAuthorities();
 
-    public Long getId(){
-        return id;
-    }
-    public void setId(Long id){
-        this.id = id;
-    }
-
-    public String getNome(){
-        return nome;
-    }
-    public void setNome(String nome){
-        this.nome = nome;
+    @Override
+    public String getPassword() {
+        return this.senha;
     }
 
-    public String getEmail(){
-        return email;
-    }
-    public void setEmail(String email){
-        this.email = email;
+    @Override
+    public String getUsername() {
+        return this.email;
     }
 
-    public String getSenha() {
-        return senha;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
-    public void setSenha(String senha) {
-        this.senha = senha;
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override

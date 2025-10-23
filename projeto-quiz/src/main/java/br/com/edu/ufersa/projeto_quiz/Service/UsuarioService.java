@@ -4,11 +4,14 @@ import br.com.edu.ufersa.projeto_quiz.API.dto.*;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Aluno;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Professor;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Usuario;
+import br.com.edu.ufersa.projeto_quiz.Model.repository.AlunoRepository;
+import br.com.edu.ufersa.projeto_quiz.Model.repository.ProfessorRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 // import org.springframework.security.crypto.password.PasswordEncoder; // Removido por enquanto
 
@@ -20,21 +23,26 @@ import java.util.stream.Collectors;
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final ModelMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper mapper) {
+    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper mapper, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
     }
+    @Autowired
+    public AlunoRepository alunoRepository;
+    @Autowired
+    public ProfessorRepository professorRepository;
 
     public ReturnAlunoDTO criarAluno(@Valid InputAlunoDTO dto) throws DataIntegrityViolationException {
         Usuario usuarioExistente = usuarioRepository.findByEmail(dto.getEmail());
         if (usuarioExistente != null) {
             throw new DataIntegrityViolationException("Já existe um usuário cadastrado com o mesmo email");
         }
-
-
         Aluno novoAluno = mapper.map(dto, Aluno.class);
+        novoAluno.setSenha(passwordEncoder.encode(dto.getSenha()));
         Aluno alunoSalvo = usuarioRepository.save(novoAluno);
         return mapper.map(alunoSalvo, ReturnAlunoDTO.class);
     }
@@ -46,11 +54,22 @@ public class UsuarioService {
         }
 
         Professor novoProfessor = mapper.map(dto, Professor.class);
+        novoProfessor.setSenha(passwordEncoder.encode(dto.getSenha()));
         Professor professorSalvo = usuarioRepository.save(novoProfessor);
         return mapper.map(professorSalvo, ReturnProfessorDTO.class);
     }
 
-    public List<ReturnUsuarioDTO> listarTodos() {
+
+    public List<ReturnAlunoDTO> listarTodosAlunos() {
+        List<Aluno> alunos = alunoRepository.findAll();
+       return  alunos.stream().map(aluno -> mapper.map(aluno, ReturnAlunoDTO.class)).toList();
+    }
+    public List<ReturnProfessorDTO> listarTodosProfessores() {
+        List<Professor> professores = professorRepository.findAll();
+        return  professores.stream().map(professor -> mapper.map(professor, ReturnProfessorDTO.class)).toList();
+    }
+
+    public List<ReturnUsuarioDTO> listarTodosUsuarios() {
         List<Usuario> todosUsuarios = usuarioRepository.findAll();
 
         return todosUsuarios.stream().map(usuario -> {
