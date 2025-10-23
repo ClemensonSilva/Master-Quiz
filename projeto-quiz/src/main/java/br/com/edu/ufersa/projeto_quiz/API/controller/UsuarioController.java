@@ -21,6 +21,18 @@ public class UsuarioController {
         this.service = service;
     }
 
+
+    @GetMapping("/alunos")
+    public ResponseEntity<List<ReturnAlunoDTO>> listarTodosAlunos() {
+        List<ReturnAlunoDTO> alunos = service.listarTodosAlunos();
+        return ResponseEntity.ok(alunos);
+    }
+    @GetMapping("/professores")
+    public ResponseEntity<List<ReturnProfessorDTO>> listarTodosProfessores() {
+        List<ReturnProfessorDTO> professores = service.listarTodosProfessores();
+        return ResponseEntity.ok(professores);
+    }
+
     @PostMapping("/alunos")
     public ResponseEntity<ReturnAlunoDTO> criarAluno(@Valid @RequestBody InputAlunoDTO alunoDTO) {
         ReturnAlunoDTO alunoSalvo = service.criarAluno(alunoDTO);
@@ -39,11 +51,6 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<ReturnUsuarioDTO>> listarTodos() {
-        List<ReturnUsuarioDTO> usuarios = service.listarTodos();
-        return ResponseEntity.ok(usuarios); 
-    }
 
     @PutMapping("/alunos/{id}")
     public ResponseEntity<ReturnAlunoDTO> atualizarAluno(@PathVariable Long id, @Valid @RequestBody InputAlunoDTO dto) {
