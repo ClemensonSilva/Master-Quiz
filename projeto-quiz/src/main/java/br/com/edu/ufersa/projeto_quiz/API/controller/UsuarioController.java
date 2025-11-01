@@ -56,6 +56,11 @@ public class UsuarioController {
         return ResponseEntity.ok(disciplinas);
     }
 
+    @PostMapping("/alunos/{id}/disciplinas")
+    public ResponseEntity<MatriculaResponseDTO> enroll(@Valid @RequestBody MatriculaInputDTO matriculaInputDTO, @PathVariable long id) throws ResourceNotFound {
+        return new ResponseEntity<>(service.enrollAluno(matriculaInputDTO, id), HttpStatus.CREATED);
+    }
+
     @PostMapping("/alunos")
     public ResponseEntity<ReturnAlunoDTO> criarAluno(@Valid @RequestBody InputAlunoDTO alunoDTO) {
         ReturnAlunoDTO alunoSalvo = service.criarAluno(alunoDTO);
