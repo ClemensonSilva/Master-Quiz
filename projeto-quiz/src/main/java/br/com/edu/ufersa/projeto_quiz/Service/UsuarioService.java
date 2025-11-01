@@ -2,9 +2,11 @@ package br.com.edu.ufersa.projeto_quiz.Service;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.*;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Aluno;
+import br.com.edu.ufersa.projeto_quiz.Model.entity.Disciplina;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Professor;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Usuario;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.AlunoRepository;
+import br.com.edu.ufersa.projeto_quiz.Model.repository.DisciplinaRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.ProfessorRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.UsuarioRepository;
 import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 // import org.springframework.security.crypto.password.PasswordEncoder; // Removido por enquanto
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,6 +39,8 @@ public class UsuarioService {
     public AlunoRepository alunoRepository;
     @Autowired
     public ProfessorRepository professorRepository;
+    @Autowired
+    public DisciplinaRepository disciplinaRepository;
 
     public ReturnAlunoDTO criarAluno(@Valid InputAlunoDTO dto) throws DataIntegrityViolationException {
         Usuario usuarioExistente = usuarioRepository.findByEmail(dto.getEmail());
@@ -134,4 +139,36 @@ public class UsuarioService {
     public void deletar(Long id) {
         usuarioRepository.deleteById(id);
     }
+
+    /**
+     * Metodo que será usada para buscar as diciplinas associadas ao aluno ou ao professor
+     * passado no parâmetro como o id do usuário. Após isso, verifica-se se o user é Aluno ou
+     * Professor e, baseando-se nisso, busca as disciplinas correspondentes ao tipo de usuário.
+     * @param userId
+     * @return List<DisciplinaDTO>
+     */
+    public List<DisciplinaDTOResponse> disciplinasByUser(long userId) throws ResourceNotFound {
+        Usuario user = usuarioRepository.findBy(userId);
+        if(user == null){
+            throw new ResourceNotFound("Usuário não encontrado");
+        }
+        List<Disciplina> disciplinas = new ArrayList<>();
+
+        if (user instanceof Professor) {
+             disciplinas = disciplinaRepository.findDisciplinaByProfessor((Professor) user);
+        } else if (user instanceof Aluno) {
+             disciplinas = disciplinaRepository.findDisciplinaByAluno((Aluno) user);
+        }
+
+        if (disciplinas == null || disciplinas.isEmpty()) {
+            throw new ResourceNotFound(
+                    "Nenhuma disciplina encontrada para o usuário: " + user.getId()
+            );
+        }
+        return disciplinas
+                .stream()
+                .map((x) -> mapper.map(x, DisciplinaDTOResponse.class))
+                .collect(Collectors.toList());
+
+}
 }
