@@ -65,7 +65,7 @@ public class UsuarioService {
         return mapper.map(aluno, ReturnAlunoDTO.class);
     }
     public ReturnProfessorDTO getProfessor(Long id) throws ResourceNotFound {
-        Professor professor = professorRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Aluno não encontrado"));
+        Professor professor = professorRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Professor não encontrado"));
         return mapper.map(professor, ReturnProfessorDTO.class);
     }
 

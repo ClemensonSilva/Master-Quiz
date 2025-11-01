@@ -45,8 +45,6 @@ public class UsuarioController {
         return ResponseEntity.ok(professor);
     }
 
-
-
     @PostMapping("/alunos")
     public ResponseEntity<ReturnAlunoDTO> criarAluno(@Valid @RequestBody InputAlunoDTO alunoDTO) {
         ReturnAlunoDTO alunoSalvo = service.criarAluno(alunoDTO);
