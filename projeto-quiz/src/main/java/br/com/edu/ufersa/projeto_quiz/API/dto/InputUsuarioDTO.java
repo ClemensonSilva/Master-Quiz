@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
+/**
+ * Classe abstrata usada para passagem de dados para cadastro de usuários, professor ou aluno, na plataforma.
+ */
 public abstract class InputUsuarioDTO {
     @NotBlank(message = "O nome enviado não é válido")
     private String nome;

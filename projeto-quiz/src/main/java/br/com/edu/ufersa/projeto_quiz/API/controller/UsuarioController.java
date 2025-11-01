@@ -45,6 +45,17 @@ public class UsuarioController {
         return ResponseEntity.ok(professor);
     }
 
+    @GetMapping("/professores/{id}/disciplinas")
+    public ResponseEntity<List<DisciplinaDTOResponse>> getDisciplinasByProfessor(@PathVariable Long id) throws ResourceNotFound {
+        List<DisciplinaDTOResponse> disciplinas = service.disciplinasByUser(id);
+        return ResponseEntity.ok(disciplinas);
+    }
+    @GetMapping("/alunos/{id}/disciplinas")
+    public ResponseEntity<List<DisciplinaDTOResponse>> getDisciplinasByAluno(@PathVariable Long id) throws ResourceNotFound {
+        List<DisciplinaDTOResponse> disciplinas = service.disciplinasByUser(id);
+        return ResponseEntity.ok(disciplinas);
+    }
+
     @PostMapping("/alunos")
     public ResponseEntity<ReturnAlunoDTO> criarAluno(@Valid @RequestBody InputAlunoDTO alunoDTO) {
         ReturnAlunoDTO alunoSalvo = service.criarAluno(alunoDTO);

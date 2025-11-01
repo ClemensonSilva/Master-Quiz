@@ -4,6 +4,10 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Usuario;
 
 import java.util.Objects;
 
+/**
+ * Classe responsável por retornar nome e email em consultas de usuário.
+ * Não há referencia a senhas nela.
+ */
 public abstract class ReturnUsuarioDTO {
     private Long id;
     private String nome;

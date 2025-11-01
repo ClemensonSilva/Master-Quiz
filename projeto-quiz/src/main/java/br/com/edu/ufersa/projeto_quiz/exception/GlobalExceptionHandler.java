@@ -49,6 +49,28 @@ public class GlobalExceptionHandler {
         body.put("timestamp", LocalDateTime.now());
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(BusinessLogicException.class)
+    public ResponseEntity<Object> handleBusinessLogicException(BusinessLogicException ex){
+        StringBuilder mensagem = new StringBuilder("Erro na consulta; ");
+        mensagem.append(ex.getMessage());
+        Map<String, Object> body = new HashMap<>();
+        body.put("status", HttpStatus.NOT_FOUND.value());
+        body.put("error", "Resultado não encontrado!");
+        body.put("message", mensagem.toString().trim());
+        body.put("timestamp", LocalDateTime.now());
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(DeniedAcessResource.class)
+    public ResponseEntity<Object> handleDeniedAcessResource(DeniedAcessResource ex){
+        StringBuilder mensagem = new StringBuilder("Erro na consulta; ");
+        mensagem.append(ex.getMessage());
+        Map<String, Object> body = new HashMap<>();
+        body.put("status", HttpStatus.NOT_FOUND.value());
+        body.put("error", "Resultado não encontrado!");
+        body.put("message", mensagem.toString().trim());
+        body.put("timestamp", LocalDateTime.now());
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
 
 
 
