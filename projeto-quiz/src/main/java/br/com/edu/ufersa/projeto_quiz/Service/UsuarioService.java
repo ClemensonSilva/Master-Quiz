@@ -7,6 +7,7 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Usuario;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.AlunoRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.ProfessorRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.UsuarioRepository;
+import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,15 @@ public class UsuarioService {
         return mapper.map(professorSalvo, ReturnProfessorDTO.class);
     }
 
+    public ReturnAlunoDTO getAluno(long id) throws ResourceNotFound {
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Aluno não encontrado"));
+        return mapper.map(aluno, ReturnAlunoDTO.class);
+    }
+    public ReturnProfessorDTO getProfessor(Long id) throws ResourceNotFound {
+        Professor professor = professorRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Aluno não encontrado"));
+        return mapper.map(professor, ReturnProfessorDTO.class);
+    }
+
 
     public List<ReturnAlunoDTO> listarTodosAlunos() {
         List<Aluno> alunos = alunoRepository.findAll();
@@ -81,12 +91,12 @@ public class UsuarioService {
             return null;
         }).collect(Collectors.toList());
     }
-    public ReturnAlunoDTO atualizarAluno(Long id, InputAlunoDTO dto) {
+    public ReturnAlunoDTO atualizarAluno(Long id, InputAlunoDTO dto) throws ResourceNotFound {
         Usuario usuarioExistente = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado para atualização"));
+                .orElseThrow(() -> new ResourceNotFound("Aluno não encontrado para atualização"));
 
         if (!(usuarioExistente instanceof Aluno)) {
-            throw new RuntimeException("O ID fornecido não pertence a um Aluno.");
+            throw new ResourceNotFound("O ID fornecido não pertence a um Aluno.");
         }
 
         Usuario usuarioComEmail = usuarioRepository.findByEmail(dto.getEmail());
@@ -101,12 +111,12 @@ public class UsuarioService {
         return mapper.map(alunoSalvo, ReturnAlunoDTO.class);
     }
 
-    public ReturnProfessorDTO atualizarProfessor(Long id, InputProfessorDTO dto) {
+    public ReturnProfessorDTO atualizarProfessor(Long id, InputProfessorDTO dto) throws ResourceNotFound {
         Usuario usuarioExistente = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Professor não encontrado para atualização"));
+                .orElseThrow(() -> new ResourceNotFound("Professor não encontrado para atualização"));
 
         if (!(usuarioExistente instanceof Professor)) {
-            throw new RuntimeException("O ID fornecido não pertence a um Professor.");
+            throw new ResourceNotFound("O ID fornecido não pertence a um Professor.");
         }
 
         Usuario usuarioComEmail = usuarioRepository.findByEmail(dto.getEmail());

@@ -2,6 +2,7 @@ package br.com.edu.ufersa.projeto_quiz.API.controller;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.*;
 import br.com.edu.ufersa.projeto_quiz.Service.UsuarioService;
+import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,19 @@ public class UsuarioController {
         return ResponseEntity.ok(professores);
     }
 
+    @GetMapping("/alunos/{id}")
+    public ResponseEntity<ReturnAlunoDTO> getAluno(@PathVariable Long id) throws ResourceNotFound {
+        ReturnAlunoDTO aluno = service.getAluno(id);
+        return ResponseEntity.ok(aluno);
+    }
+    @GetMapping("/professores/{id}")
+    public ResponseEntity<ReturnProfessorDTO> getProfessor(@PathVariable Long id) throws ResourceNotFound {
+        ReturnProfessorDTO professor = service.getProfessor(id);
+        return ResponseEntity.ok(professor);
+    }
+
+
+
     @PostMapping("/alunos")
     public ResponseEntity<ReturnAlunoDTO> criarAluno(@Valid @RequestBody InputAlunoDTO alunoDTO) {
         ReturnAlunoDTO alunoSalvo = service.criarAluno(alunoDTO);
@@ -53,13 +67,13 @@ public class UsuarioController {
 
 
     @PutMapping("/alunos/{id}")
-    public ResponseEntity<ReturnAlunoDTO> atualizarAluno(@PathVariable Long id, @Valid @RequestBody InputAlunoDTO dto) {
+    public ResponseEntity<ReturnAlunoDTO> atualizarAluno(@PathVariable Long id, @Valid @RequestBody InputAlunoDTO dto) throws ResourceNotFound {
         ReturnAlunoDTO alunoAtualizado = service.atualizarAluno(id, dto);
         return ResponseEntity.ok(alunoAtualizado);
     }
 
     @PutMapping("/professores/{id}")
-    public ResponseEntity<ReturnProfessorDTO> atualizarProfessor(@PathVariable Long id, @Valid @RequestBody InputProfessorDTO dto) {
+    public ResponseEntity<ReturnProfessorDTO> atualizarProfessor(@PathVariable Long id, @Valid @RequestBody InputProfessorDTO dto) throws ResourceNotFound {
         ReturnProfessorDTO professorAtualizado = service.atualizarProfessor(id, dto);
         return ResponseEntity.ok(professorAtualizado);
     }
