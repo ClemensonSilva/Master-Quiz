@@ -7,6 +7,7 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Disciplina;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Professor;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.DisciplinaRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.ProfessorRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,9 @@ public class DisciplinaService {
     private DisciplinaRepository repository;
     @Autowired
     private ProfessorRepository professorRepository;
+
+    @Autowired
+    private ModelMapper mapper;
 
     public List<DisciplinaDTOResponse> findAll(){
         List<Disciplina> disciplinas = repository.findAll();
@@ -60,7 +64,7 @@ public class DisciplinaService {
         List<Disciplina> disciplinas = repository.findDisciplinaByAluno(aluno);
         return disciplinas
                 .stream()
-                .map(DisciplinaDTO::convert)
+                .map((x) -> mapper.map(x, DisciplinaDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -68,7 +72,7 @@ public class DisciplinaService {
         List<Disciplina> disciplinas = repository.findDisciplinaByProfessor(professor);
         return disciplinas
                 .stream()
-                .map(DisciplinaDTO::convert)
+                .map((x) -> mapper.map(x, DisciplinaDTO.class))
                 .collect(Collectors.toList());
     }
 }

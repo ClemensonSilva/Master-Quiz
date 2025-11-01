@@ -18,6 +18,10 @@ import java.util.Set;
 @ToString
 @NoArgsConstructor
 // TODO criar um DisciplinaDTOResponde com os atributos como Professor, list<quiz> e set<alunos>
+/**
+ * Classe responsável pela passagem de dados para criar a entidade Disciplina.
+ * @author Clemerson
+ */
 public class DisciplinaDTO {
     @NotBlank(message = "A disciplina precisa de um nome definido!")
     @Size(max = 25, message = "O nome da disciplina deve ter até 25 caracteres!")
@@ -25,10 +29,10 @@ public class DisciplinaDTO {
     @NotEmpty(message = "A disciplina precisa de professor associado!")
     private Long professorId;
 
-    public static DisciplinaDTO convert(Disciplina disciplina) {
-        DisciplinaDTO dto = new DisciplinaDTO();
-        dto.setNome(disciplina.getNome());
-        dto.setProfessorId(disciplina.getProfessor().getId());
-        return dto;
-    }
+//    public static DisciplinaDTO convert(Disciplina disciplina) {
+//        DisciplinaDTO dto = new DisciplinaDTO();
+//        dto.setNome(disciplina.getNome());
+//        dto.setProfessorId(disciplina.getProfessor().getId());
+//        return dto;
+//    }
 }

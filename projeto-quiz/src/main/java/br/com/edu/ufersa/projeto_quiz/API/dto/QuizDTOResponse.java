@@ -17,11 +17,11 @@ public class QuizDTOResponse {
     private Set<QuestaoDTOResponse> questoes;
     private DisciplinaDTO  disciplina;
 
-    public static  QuizDTOResponse convert(Quiz quiz) {
-        QuizDTOResponse response = new QuizDTOResponse();
-        response.setTitulo(quiz.getTitulo());
-        response.setDisciplina(DisciplinaDTO.convert(quiz.getDisciplina()));
-        response.setQuestoes(quiz.getQuestoes().stream().map(QuestaoDTOResponse::convert).collect(Collectors.toSet()));
-        return response;
-    }
+//    public static  QuizDTOResponse convert(Quiz quiz) {
+//        QuizDTOResponse response = new QuizDTOResponse();
+//        response.setTitulo(quiz.getTitulo());
+//        response.setDisciplina(DisciplinaDTO.convert(quiz.getDisciplina()));
+//        response.setQuestoes(quiz.getQuestoes().stream().map(QuestaoDTOResponse::convert).collect(Collectors.toSet()));
+//        return response;
+//    }
 }

@@ -8,6 +8,7 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Questao;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.DisciplinaRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.QuizRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,19 +22,24 @@ public class QuizService {
     QuizRepository repository;
     @Autowired
     DisciplinaRepository disciplinaRepository;
+    private final ModelMapper mapper;
+    @Autowired
+    public QuizService(ModelMapper mapper) {
+        this.mapper = mapper;
+    }
 
     public List<QuizDTOResponse> findAll(){
         List<Quiz> quizes = repository.findAll();
         return quizes
                 .stream()
-                .map(QuizDTOResponse::convert)
+                .map((x) -> mapper.map(x, QuizDTOResponse.class))
                 .collect(Collectors.toList());
     }
 
     public QuizDTO findById(long id){
         Optional<Quiz> quiz = repository.findById(id);
         if(quiz.isPresent())
-            return QuizDTO.convert(quiz.get());
+            return mapper.map(quiz.get(), QuizDTO.class);
         return null;
     }
 
