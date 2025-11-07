@@ -16,7 +16,7 @@ public class QuestaoDTOResponse {
     private String descricao;
     private AlternativaDTO alternativaCorreta;
     private List<AlternativaDTO> alternativas;
-    private QuizDTO quiz;
+    private DisciplinaDTOResponse disciplinaDTOResponse;
 //
 //    public static QuestaoDTOResponse convert(Questao questao){
 //        QuestaoDTOResponse dto = new QuestaoDTOResponse();

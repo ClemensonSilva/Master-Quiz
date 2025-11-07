@@ -13,15 +13,18 @@ import java.util.HashSet;
 
 @Entity
 @DiscriminatorValue("Aluno")
+/**
+ * Representa um Aluno  dentro do sistema de Quizes.
+ * * <p>Esta é a entidade que agrupa informações específicas do usuário aluno.
+ * * <p>A entidade utiliza o {@code GenerationType.IDENTITY} para a chave primária,
+ * delegando a criação de IDs ao banco de dados.</p>
+ * * @author
+ * @version 1.0
+ * @see Disciplina
+ */
 
 public class Aluno extends Usuario{
-    // TODO corrigir relacionamento redudante entre aluno e discplina
     @ManyToMany
-    @JoinTable(
-            name = "tb_aluno_disciplina",
-            joinColumns = @JoinColumn(name = "aluno_id"),
-            inverseJoinColumns = @JoinColumn(name = "disciplina_id")
-    )
     private Set<Disciplina> disciplinas = new HashSet<>();
 
     public static Aluno convert(AlunoDTO dto){

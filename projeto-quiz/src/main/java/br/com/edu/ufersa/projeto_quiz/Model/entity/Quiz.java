@@ -24,7 +24,7 @@ public class Quiz {
     @Column(nullable = false, length = 100)
     private String titulo;
 
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private Set<Questao> questoes;
 
     @ManyToOne

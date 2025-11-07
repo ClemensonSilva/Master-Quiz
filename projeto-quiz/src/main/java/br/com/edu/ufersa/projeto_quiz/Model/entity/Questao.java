@@ -9,6 +9,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -25,25 +26,28 @@ public class Questao {
     private String descricao;
 
     // uma questao possui apenas uma alternativa correta
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "alternativa_correta_id")
     private Alternativa alternativaCorreta;
 
     @OneToMany(mappedBy = "questao", cascade = CascadeType.ALL) // uma questao possui muitas alternativas
     private List<Alternativa> alternativas = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "quiz_id")
-    private Quiz quiz;
+    @ManyToOne
+    @JoinColumn(name = "disciplina_id", nullable = false)
+    private Disciplina disciplina;
 
-    public static Questao convert(QuestaoDTO dto, Quiz quiz){
-        Questao questao = new Questao();
-        questao.setDescricao(dto.getDescricao());
-        questao.setAlternativaCorreta(Alternativa.convert(dto.getAlternativaCorreta()));
-        questao.setAlternativas(dto.getAlternativas().stream().map(q -> Alternativa.convert(q)).collect(Collectors.toList()));
-        questao.setQuiz(quiz);
-        return questao;
-    }
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<Quiz> quiz;
+
+//    public static Questao convert(QuestaoDTO dto, Quiz quiz){
+//        Questao questao = new Questao();
+//        questao.setDescricao(dto.getDescricao());
+//        questao.setAlternativaCorreta(Alternativa.convert(dto.getAlternativaCorreta()));
+//        questao.setAlternativas(dto.getAlternativas().stream().map(q -> Alternativa.convert(q)).collect(Collectors.toList()));
+//        questao.setQuiz(quiz);
+//        return questao;
+//    }
 
     public void addAlternativa(Alternativa alternativa) {
         this.alternativas.add(alternativa);

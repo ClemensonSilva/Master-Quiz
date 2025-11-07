@@ -39,33 +39,33 @@ public class QuestaoService {
             return mapper.map(questao.get(), QuestaoDTO.class);
         return null;
     }
-    // TODO criar um builder para ajudar na criacao da questao
-    @Transactional
-    public QuestaoDTO save(QuestaoDTO questaoDTO){
-        // verifica se o quiz existe
-        Quiz quiz = quizRepository.findById(questaoDTO.getQuizId())
-                .orElseThrow(() -> new RuntimeException("Quiz não encontrado"));
-        // criacao de uma questao para persistir no DB
-        Questao novaQuestao = new Questao();
-        novaQuestao.setDescricao(questaoDTO.getDescricao());
-        novaQuestao.setQuiz(quiz);
-
-        // associa as alternativas  à questao
-        questaoDTO.getAlternativas().forEach(alternativaDTO -> {
-            Alternativa novaAlternativa = new Alternativa();
-            novaAlternativa.setDescricao(alternativaDTO.getDescricao());
-            novaQuestao.addAlternativa(novaAlternativa);
-        });
-        // mapeia a alternativa correta
-        Alternativa alternativaCorreta = novaQuestao.getAlternativas().stream()
-                .filter(a -> a.getDescricao().equals(questaoDTO.getAlternativaCorreta().getDescricao()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Alternativa correta não encontrada na lista de alternativas"));
-        novaQuestao.setAlternativaCorreta(alternativaCorreta);
-
-        Questao questao = repository.save(novaQuestao);
-        return QuestaoDTO.convert(questao);
-    }
+//    // TODO criar um builder para ajudar na criacao da questao
+//    @Transactional
+//    public QuestaoDTO save(QuestaoDTO questaoDTO){
+//        // verifica se o quiz existe
+//        Quiz quiz = quizRepository.findById(questaoDTO.getQuizId())
+//                .orElseThrow(() -> new RuntimeException("Quiz não encontrado"));
+//        // criacao de uma questao para persistir no DB
+//        Questao novaQuestao = new Questao();
+//        novaQuestao.setDescricao(questaoDTO.getDescricao());
+//        novaQuestao.setQuiz(quiz);
+//
+//        // associa as alternativas  à questao
+//        questaoDTO.getAlternativas().forEach(alternativaDTO -> {
+//            Alternativa novaAlternativa = new Alternativa();
+//            novaAlternativa.setDescricao(alternativaDTO.getDescricao());
+//            novaQuestao.addAlternativa(novaAlternativa);
+//        });
+//        // mapeia a alternativa correta
+//        Alternativa alternativaCorreta = novaQuestao.getAlternativas().stream()
+//                .filter(a -> a.getDescricao().equals(questaoDTO.getAlternativaCorreta().getDescricao()))
+//                .findFirst()
+//                .orElseThrow(() -> new RuntimeException("Alternativa correta não encontrada na lista de alternativas"));
+//        novaQuestao.setAlternativaCorreta(alternativaCorreta);
+//
+//        Questao questao = repository.save(novaQuestao);
+//        return QuestaoDTO.convert(questao);
+//    }
 
     public QuestaoDTO delete(long id){
         Optional<Questao> questao = repository.findById(id);
@@ -78,7 +78,7 @@ public class QuestaoService {
         List<Questao> questoes = repository.findQuestoesByQuiz(quiz);
         return questoes
                 .stream()
-                .map(QuestaoDTO::convert)
+                .map((x)-> mapper.map(x, QuestaoDTO.class))
                 .collect(Collectors.toList());
     }
 }

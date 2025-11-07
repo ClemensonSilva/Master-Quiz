@@ -17,6 +17,23 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "tb_disciplina")
+
+/**
+ * Representa uma Disciplina (ou Matéria) dentro do sistema de Quizes.
+ * * <p>Esta é a entidade central que agrupa Quizes e Questões e define o escopo
+ * de trabalho de um Professor e a participação de Alunos.
+ * *  <p> **REGRA DE DOMÍNIO:** Todas as Questões neste {@code Set} são exclusivas
+ *  * desta Disciplina e não devem ser associadas a nenhuma outra Disciplina.
+ * * <p>A entidade utiliza o {@code GenerationType.IDENTITY} para a chave primária,
+ * delegando a criação de IDs ao banco de dados.</p>
+ * * @author Franscico Clemenson
+ * @version 1.0
+ * @see Quiz
+ * @see Questao
+ * @see Professor
+ * @see Aluno
+ */
+
 public class Disciplina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +48,9 @@ public class Disciplina {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id", nullable = false)
     private Professor professor;
+
+    @OneToMany(mappedBy = "disciplina", cascade = CascadeType.REMOVE)
+    private Set<Questao> questoes;
 
     @ManyToMany()
     @JoinTable(
