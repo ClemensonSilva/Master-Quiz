@@ -8,6 +8,7 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.QuestaoRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.QuizRepository;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,19 +22,21 @@ public class QuestaoService {
     private QuestaoRepository repository;
     @Autowired
     private QuizRepository quizRepository;
+    @Autowired
+    private ModelMapper mapper;
 
     public List<QuestaoDTOResponse> findAll(){
         List<Questao> questoes = repository.findAll();
         return questoes
                 .stream()
-                .map(QuestaoDTOResponse::convert)
+                .map((x) -> mapper.map(x, QuestaoDTOResponse.class))
                 .collect(Collectors.toList());
     }
 
     public QuestaoDTO findById(long id){
         Optional<Questao> questao = repository.findById(id);
         if(questao.isPresent())
-            return QuestaoDTO.convert(questao.get());
+            return mapper.map(questao.get(), QuestaoDTO.class);
         return null;
     }
     // TODO criar um builder para ajudar na criacao da questao

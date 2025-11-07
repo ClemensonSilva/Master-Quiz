@@ -43,10 +43,19 @@ public class QuizService {
         return null;
     }
 
-    public QuizDTO save(QuizDTO quizDTO){
-        Disciplina disciplina = disciplinaRepository.findById(quizDTO.getDisciplinaId()).get();
-        Quiz quiz = repository.save(Quiz.convert(quizDTO, disciplina) );
-        return QuizDTO.convert(quiz);
+    /**
+     * Método usado para salvar um quiz e associa-lo a uma disciplina.
+     * Regra: nenhuma questão pode ser adicionada no momento de criação, então este método
+     * é usado apenas para associar um quiz vazio com uma disciplina existente.
+     * @param quizDTO
+     * @param disciplina
+     * @return QuizDTO
+     */
+    public QuizDTO save(QuizDTO quizDTO, Disciplina disciplina){
+        Quiz quiz = mapper.map(quizDTO, Quiz.class);
+        quiz.setDisciplina(disciplina);
+        repository.save(quiz);
+        return mapper.map(quiz, QuizDTO.class);
     }
 
     public QuizDTO delete(long id){
@@ -60,7 +69,7 @@ public class QuizService {
         List<Quiz> quizes = repository.findQuizByDisciplina(disciplina);
         return quizes
                 .stream()
-                .map(QuizDTO::convert)
+                .map((x) -> mapper.map(x, QuizDTO.class))
                 .collect(Collectors.toList());
     }
 }

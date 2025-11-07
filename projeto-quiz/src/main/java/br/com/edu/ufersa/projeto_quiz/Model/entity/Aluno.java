@@ -15,7 +15,7 @@ import java.util.HashSet;
 @DiscriminatorValue("Aluno")
 
 public class Aluno extends Usuario{
-
+    // TODO corrigir relacionamento redudante entre aluno e discplina
     @ManyToMany
     @JoinTable(
             name = "tb_aluno_disciplina",
