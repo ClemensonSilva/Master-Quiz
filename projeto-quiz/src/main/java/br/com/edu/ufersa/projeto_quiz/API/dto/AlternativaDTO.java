@@ -1,6 +1,7 @@
 package br.com.edu.ufersa.projeto_quiz.API.dto;
 
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Alternativa;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,6 +11,7 @@ import lombok.ToString;
 @ToString
 public class AlternativaDTO {
         private Long id;
+        @NotBlank
         private String descricao;
 
         public static AlternativaDTO  convert(Alternativa alternativa){

@@ -9,7 +9,9 @@ import br.com.edu.ufersa.projeto_quiz.Model.repository.AlunoRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.DisciplinaRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.ProfessorRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.UsuarioRepository;
+import br.com.edu.ufersa.projeto_quiz.exception.BusinessLogicException;
 import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,10 +150,8 @@ public class UsuarioService {
      * @return List<DisciplinaDTO>
      */
     public List<DisciplinaDTOResponse> disciplinasByUser(long userId) throws ResourceNotFound {
-        Usuario user = usuarioRepository.findBy(userId);
-        if(user == null){
-            throw new ResourceNotFound("Usuário não encontrado");
-        }
+        Usuario user = usuarioRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("Usuário não encontrado"));
+
         List<Disciplina> disciplinas = new ArrayList<>();
 
         if (user instanceof Professor) {
@@ -171,4 +171,32 @@ public class UsuarioService {
                 .collect(Collectors.toList());
 
 }
+
+    /**
+     * Método usado para matricular um aluno em uma disciplina
+     * @param matriculaInputDTO
+     * @param alunoId
+     * @return MatriculaResponseDTO
+     * @throws ResourceNotFound
+     */
+    @Transactional
+    public MatriculaResponseDTO enrollAluno(@Valid MatriculaInputDTO matriculaInputDTO, long alunoId) throws ResourceNotFound {
+        Usuario user = usuarioRepository.findById(alunoId)
+                .orElseThrow(() -> new ResourceNotFound("Usuário não encontrado"));
+
+        if (user instanceof Professor) {
+            throw  new BusinessLogicException("Professor não pode matricular-se em disciplinas");
+        }
+
+        Optional<Disciplina> disciplina = disciplinaRepository.findById(matriculaInputDTO.getDisciplinaId());
+
+        if (!disciplina.isPresent()) throw  new ResourceNotFound("Usuário não encontrado");
+
+        disciplina.get().getAluno().add((Aluno) user);
+
+        disciplinaRepository.save(disciplina.get());
+
+        return new MatriculaResponseDTO(mapper.map(disciplina.get(), DisciplinaDTO.class), mapper.map(user, ReturnAlunoDTO.class));
+
+    }
 }

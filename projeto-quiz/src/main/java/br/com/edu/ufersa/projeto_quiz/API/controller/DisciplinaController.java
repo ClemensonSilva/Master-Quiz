@@ -1,8 +1,8 @@
 package br.com.edu.ufersa.projeto_quiz.API.controller;
 
-import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTO;
-import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTOResponse;
+import br.com.edu.ufersa.projeto_quiz.API.dto.*;
 import br.com.edu.ufersa.projeto_quiz.Service.DisciplinaService;
+import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +31,14 @@ public class DisciplinaController {
     public ResponseEntity<DisciplinaDTO> create(@RequestBody DisciplinaDTO disciplinaDTO){
         return new ResponseEntity<>(service.save(disciplinaDTO), HttpStatus.CREATED);
     }
-
+    @PostMapping("/{id}/quizes")
+    public ResponseEntity<QuizDTO> addQuiz(@RequestBody QuizDTO quizDTO, @PathVariable long id) throws ResourceNotFound {
+        return  new ResponseEntity<>(service.addQuiz(quizDTO, id), HttpStatus.CREATED);
+    }
+    @PostMapping("/{id}/questoes")
+    public ResponseEntity<QuestaoDTOResponse> addQuestao(@RequestBody QuestaoDTO questaoDTO, @PathVariable long id) throws ResourceNotFound {
+        return  new ResponseEntity<>(service.addQuestao(questaoDTO, id), HttpStatus.CREATED);
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<DisciplinaDTO> delete(@PathVariable Long id){
         return new ResponseEntity<>(service.delete(id), HttpStatus.OK);

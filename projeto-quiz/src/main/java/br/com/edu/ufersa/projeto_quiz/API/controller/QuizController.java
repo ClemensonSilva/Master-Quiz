@@ -26,10 +26,11 @@ public class QuizController {
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 
-    @PostMapping()
-    public ResponseEntity<QuizDTO> create(@RequestBody QuizDTO quizDTO){
-        return new ResponseEntity<>(service.save(quizDTO), HttpStatus.CREATED);
-    }
+    // Não é possível criar um quiz não associados a uma disciplina
+//    @PostMapping()
+//    public ResponseEntity<QuizDTO> create(@RequestBody QuizDTO quizDTO){
+//        return new ResponseEntity<>(service.save(quizDTO), HttpStatus.CREATED);
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<QuizDTO> delete(@PathVariable Long id){

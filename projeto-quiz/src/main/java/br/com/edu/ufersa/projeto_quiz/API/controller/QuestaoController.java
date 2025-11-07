@@ -26,10 +26,10 @@ public class QuestaoController {
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 
-    @PostMapping()
-    public ResponseEntity<QuestaoDTO> create(@RequestBody QuestaoDTO questaoDTO){
-        return new ResponseEntity<>(service.save(questaoDTO), HttpStatus.CREATED);
-    }
+//    @PostMapping()
+//    public ResponseEntity<QuestaoDTO> create(@RequestBody QuestaoDTO questaoDTO){
+//        return new ResponseEntity<>(service.save(questaoDTO), HttpStatus.CREATED);
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<QuestaoDTO> delete(@PathVariable Long id){

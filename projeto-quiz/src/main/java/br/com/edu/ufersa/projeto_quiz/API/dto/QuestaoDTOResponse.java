@@ -16,13 +16,14 @@ public class QuestaoDTOResponse {
     private String descricao;
     private AlternativaDTO alternativaCorreta;
     private List<AlternativaDTO> alternativas;
-    private QuizDTO quiz;
-
-    public static QuestaoDTOResponse convert(Questao questao){
-        QuestaoDTOResponse dto = new QuestaoDTOResponse();
-        dto.setDescricao(questao.getDescricao());
-        dto.setAlternativaCorreta(AlternativaDTO.convert(questao.getAlternativaCorreta()));
-        dto.setAlternativas(questao.getAlternativas().stream().map(q -> AlternativaDTO.convert(q)).collect(Collectors.toList()));
-        dto.setQuiz(QuizDTO.convert(questao.getQuiz()));
-        return dto;
-    }}
+    private DisciplinaDTOResponse disciplinaDTOResponse;
+//
+//    public static QuestaoDTOResponse convert(Questao questao){
+//        QuestaoDTOResponse dto = new QuestaoDTOResponse();
+//        dto.setDescricao(questao.getDescricao());
+//        dto.setAlternativaCorreta(AlternativaDTO.convert(questao.getAlternativaCorreta()));
+//        dto.setAlternativas(questao.getAlternativas().stream().map(q -> AlternativaDTO.convert(q)).collect(Collectors.toList()));
+//        dto.setQuiz(QuizDTO.convert(questao.getQuiz()));
+//        return dto;
+//    }
+}
