@@ -26,7 +26,6 @@ public class DisciplinaController {
     public ResponseEntity<DisciplinaDTOResponse> findById(@PathVariable Long id){
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
-
     @PostMapping()
     public ResponseEntity<DisciplinaDTO> create(@RequestBody DisciplinaDTO disciplinaDTO){
         return new ResponseEntity<>(service.save(disciplinaDTO), HttpStatus.CREATED);
