@@ -22,7 +22,7 @@ public class QuizController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<QuizDTO> findById(@PathVariable Long id){
+    public ResponseEntity<QuizDTO> findById(@PathVariable Long id) {
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 

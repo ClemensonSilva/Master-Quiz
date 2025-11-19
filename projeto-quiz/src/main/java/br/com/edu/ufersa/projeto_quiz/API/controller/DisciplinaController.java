@@ -26,6 +26,19 @@ public class DisciplinaController {
     public ResponseEntity<DisciplinaDTOResponse> findById(@PathVariable Long id){
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/quizes")
+    public ResponseEntity<List<QuizDTO>> getQuizesByDisciplina(@PathVariable long id) throws ResourceNotFound {
+        return new ResponseEntity<>(service.getQuizesByDisciplina(id), HttpStatus.OK);
+    }
+    @GetMapping("/{id}/alunos")
+    public ResponseEntity<List<ReturnAlunoDTO>> getAlunosByDisciplina(@PathVariable long id) throws ResourceNotFound {
+        return new ResponseEntity<>(service.getAlunosByDisciplina(id), HttpStatus.OK);
+    }
+    @GetMapping("/{id}/professores")
+    public ResponseEntity<ReturnProfessorDTO> getProfessoresByDisciplina(@PathVariable long id) throws ResourceNotFound {
+        return new ResponseEntity<>(service.getProfessorByDisciplina(id), HttpStatus.OK);
+    }
     @PostMapping()
     public ResponseEntity<DisciplinaDTO> create(@RequestBody DisciplinaDTO disciplinaDTO){
         return new ResponseEntity<>(service.save(disciplinaDTO), HttpStatus.CREATED);

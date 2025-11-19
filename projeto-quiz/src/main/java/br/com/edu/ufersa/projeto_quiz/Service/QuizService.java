@@ -8,6 +8,7 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Questao;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.DisciplinaRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.QuizRepository;
+import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,8 +66,9 @@ public class QuizService {
         return null;
     }
 
-    public List<QuizDTO> findByDisciplina(Disciplina disciplina){
+    public List<QuizDTO> findByDisciplina(Disciplina disciplina) throws ResourceNotFound {
         List<Quiz> quizes = repository.findQuizByDisciplina(disciplina);
+        if (quizes.isEmpty()) throw new ResourceNotFound("Não há quizzes associados à disciplina " + disciplina.getNome());
         return quizes
                 .stream()
                 .map((x) -> mapper.map(x, QuizDTO.class))

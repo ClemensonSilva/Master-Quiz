@@ -17,9 +17,6 @@ import java.util.stream.Collectors;
 public class DisciplinaDTOResponse extends RepresentationModel {
     private long id;
     private String nome;
-    private List<QuizDTO> quizes;
-    private ReturnProfessorDTO professor;
-    private Set<AlunoDTO> alunos;
 //
 //    public static DisciplinaDTOResponse convert(Disciplina  disciplina) {
 //        DisciplinaDTOResponse dto = new DisciplinaDTOResponse();

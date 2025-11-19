@@ -67,7 +67,9 @@ public class UsuarioController {
 
         for (DisciplinaDTOResponse disciplina: disciplinas){
             disciplina.add(linkTo(methodOn(DisciplinaController.class).findById(disciplina.getId())).withSelfRel());
-            disciplina.add(linkTo(methodOn(UsuarioController.class).getProfessor(disciplina.getProfessor().getId())).withRel("professor"));
+            disciplina.add(linkTo(methodOn(DisciplinaController.class).getProfessoresByDisciplina(disciplina.getId())).withRel("professor"));
+            disciplina.add(linkTo(methodOn(DisciplinaController.class).getQuizesByDisciplina(disciplina.getId())).withRel("quizzes"));
+            disciplina.add(linkTo(methodOn(DisciplinaController.class).getAlunosByDisciplina(disciplina.getId())).withRel("alunos"));
         }
         return ResponseEntity.ok(disciplinas);
     }
