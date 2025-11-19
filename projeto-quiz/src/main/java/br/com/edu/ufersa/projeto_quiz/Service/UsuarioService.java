@@ -28,17 +28,18 @@ import java.util.stream.Collectors;
 @Service
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
+    private final AlunoRepository alunoRepository;
     private final ModelMapper mapper;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper mapper, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper mapper, AlunoRepository alunoRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
+        this.alunoRepository = alunoRepository;
     }
-    @Autowired
-    public AlunoRepository alunoRepository;
+
     @Autowired
     public ProfessorRepository professorRepository;
     @Autowired
@@ -198,5 +199,14 @@ public class UsuarioService {
 
         return new MatriculaResponseDTO(mapper.map(disciplina.get(), DisciplinaDTO.class), mapper.map(user, ReturnAlunoDTO.class));
 
+    }
+
+    public List<ReturnAlunoDTO> getAlunosByDisciplina(long id) throws ResourceNotFound {
+        Disciplina disciplina = new Disciplina();
+        disciplina.setId(id);
+        List<Aluno> alunos = alunoRepository.findByDisciplinas(disciplina);
+        if(alunos.isEmpty()) throw new ResourceNotFound("Nenhuma aluno matriculado na disciplina "+ disciplina.getNome());
+
+        return alunos.stream().map(x -> mapper.map(x, ReturnAlunoDTO.class)).toList();
     }
 }

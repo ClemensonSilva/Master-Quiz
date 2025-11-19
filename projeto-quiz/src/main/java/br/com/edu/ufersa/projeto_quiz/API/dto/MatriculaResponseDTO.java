@@ -14,6 +14,7 @@ import lombok.Setter;
  */
 
 // TODO aplica hateoas
+// TODO adicionar a data da matricula ao relacionamento
 public class MatriculaResponseDTO {
     private DisciplinaDTO disciplinaDTO;
     private  ReturnAlunoDTO returnAlunoDTO;

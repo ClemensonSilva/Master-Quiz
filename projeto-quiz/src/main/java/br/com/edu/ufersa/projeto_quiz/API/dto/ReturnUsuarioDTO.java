@@ -1,6 +1,7 @@
 package br.com.edu.ufersa.projeto_quiz.API.dto;
 
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Usuario;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Objects;
 
@@ -8,7 +9,7 @@ import java.util.Objects;
  * Classe responsável por retornar nome e email em consultas de usuário.
  * Não há referencia a senhas nela.
  */
-public abstract class ReturnUsuarioDTO {
+public abstract class ReturnUsuarioDTO extends RepresentationModel<ReturnUsuarioDTO> {
     private Long id;
     private String nome;
     private String email;

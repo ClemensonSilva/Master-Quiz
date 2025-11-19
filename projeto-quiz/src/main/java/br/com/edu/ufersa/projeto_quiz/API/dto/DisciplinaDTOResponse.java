@@ -4,6 +4,7 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Disciplina;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 import java.util.Set;
@@ -13,11 +14,9 @@ import java.util.stream.Collectors;
 @Setter
 @ToString
 // Esse dto é o que o usuario verá ao requisitar por uma Disciplina
-public class DisciplinaDTOResponse {
+public class DisciplinaDTOResponse extends RepresentationModel {
+    private long id;
     private String nome;
-    private List<QuizDTO> quizes;
-    private ReturnProfessorDTO professor;
-    private Set<AlunoDTO> alunos;
 //
 //    public static DisciplinaDTOResponse convert(Disciplina  disciplina) {
 //        DisciplinaDTOResponse dto = new DisciplinaDTOResponse();
