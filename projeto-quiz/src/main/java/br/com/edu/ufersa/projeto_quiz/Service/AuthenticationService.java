@@ -17,7 +17,7 @@ import java.util.Date;
 
 @Service
 public class AuthenticationService {
-    private static final long EXPIRATIONTIME = Duration.ofMinutes(25).toMillis();
+    private static final long EXPIRATIONTIME = Duration.ofMinutes(60).toMillis();
     private static  final String  ENV_JWT_KEY = "JWT_SIGNING_KEY_BASE64" ;
     private static final String PREFIX = "Bearer ";
     private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;

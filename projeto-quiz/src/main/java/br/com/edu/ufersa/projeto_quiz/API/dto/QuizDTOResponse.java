@@ -16,11 +16,4 @@ public class QuizDTOResponse extends RepresentationModel<QuizDTOResponse> {
     private long id;
     private String titulo;
 
-//    public static  QuizDTOResponse convert(Quiz quiz) {
-//        QuizDTOResponse response = new QuizDTOResponse();
-//        response.setTitulo(quiz.getTitulo());
-//        response.setDisciplina(DisciplinaDTO.convert(quiz.getDisciplina()));
-//        response.setQuestoes(quiz.getQuestoes().stream().map(QuestaoDTOResponse::convert).collect(Collectors.toSet()));
-//        return response;
-//    }
 }

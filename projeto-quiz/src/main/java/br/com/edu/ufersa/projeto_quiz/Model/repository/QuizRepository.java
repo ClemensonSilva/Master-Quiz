@@ -11,4 +11,6 @@ import java.util.List;
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
     public Quiz findQuizById(Long id);
     public List<Quiz> findQuizByDisciplina(Disciplina d);
+
+    List<Quiz> findAllByDisciplina(Disciplina disciplina);
 }

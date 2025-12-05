@@ -31,9 +31,21 @@ public class QuizService {
         this.disciplinaService = disciplinaService;
     }
 
+    /**
+     *  Encontra todos os quizes da disciplina
+     * @param disciplinaId
+     * @return quizes da disciplina
+     * @throws ResourceNotFound
+     */
+    public List<QuizDTOResponse> findAll(long disciplinaId) throws ResourceNotFound {
+        Disciplina disciplina = new Disciplina();
+        disciplina.setId(disciplinaId);
+        List<Quiz> quizes = repository.findAllByDisciplina(disciplina);
 
-    public List<QuizDTOResponse> findAll(){
-        List<Quiz> quizes = repository.findAll();
+        if (quizes.isEmpty()){
+            throw new ResourceNotFound("Nenhum quiz encontrado para a diciplina");
+        }
+
         return quizes
                 .stream()
                 .map((x) -> mapper.map(x, QuizDTOResponse.class))

@@ -5,14 +5,17 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.hateoas.RepresentationModel;
 
 @Getter
 @Setter
 @ToString
-public class AlternativaDTO {
+public class AlternativaDTO  {
         private Long id;
         @NotBlank
         private String descricao;
+        @NotBlank
+        private long questaoId;
 
         public static AlternativaDTO  convert(Alternativa alternativa){
             AlternativaDTO alternativaDTO = new AlternativaDTO();

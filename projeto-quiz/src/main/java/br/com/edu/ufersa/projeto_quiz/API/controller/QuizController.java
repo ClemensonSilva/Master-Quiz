@@ -1,15 +1,10 @@
 package br.com.edu.ufersa.projeto_quiz.API.controller;
 
-import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTOResponse;
-import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTOResponse;
-import br.com.edu.ufersa.projeto_quiz.Model.entity.Disciplina;
-import br.com.edu.ufersa.projeto_quiz.Service.DisciplinaService;
 import br.com.edu.ufersa.projeto_quiz.Service.QuizService;
 import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,44 +14,59 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/v1/quizes")
+@RequestMapping("/api/v1/disciplinas/{disciplinaId}/quizes")
 public class QuizController {
 
-    private  final QuizService service;
+    private final QuizService service;
+
     @Autowired
-    public QuizController(QuizService service ) {
+    public QuizController(QuizService service) {
         this.service = service;
     }
 
+    @GetMapping
+    public ResponseEntity<List<QuizDTOResponse>> findAll(@PathVariable Long disciplinaId) throws ResourceNotFound {
+        List<QuizDTOResponse> quizList = service.findAll(disciplinaId);
 
-    @GetMapping()
-    public ResponseEntity<List<QuizDTOResponse>> findAll() throws ResourceNotFound {
-        List<QuizDTOResponse> quizDTOResponse = service.findAll();
-
-        for (QuizDTOResponse quizResponse: quizDTOResponse){
-            // Passa a disciplina de cada quiz
-            Link disciplinaLink = linkTo(methodOn(DisciplinaController.class).findById(service.getDisciplinaByQuiz(quizResponse.getId()).getId())).withRel("disciplina");
-            quizResponse.add(disciplinaLink);
+        if (quizList.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(quizDTOResponse);
+
+        for (QuizDTOResponse quiz : quizList) {
+            long quizId = quiz.getId();
+            quiz.add(linkTo(methodOn(QuizController.class).findById(quizId, disciplinaId)).withSelfRel());
+            adicionarLinkDisciplina(quiz, disciplinaId);
+        }
+
+        return ResponseEntity.ok(quizList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<QuizDTOResponse> findById(@PathVariable Long id) throws ResourceNotFound {
-        QuizDTOResponse quizDTOResponse = service.findById(id);
-        Link disciplinaLink = linkTo(methodOn(DisciplinaController.class).findById(service.getDisciplinaByQuiz(quizDTOResponse.getId()).getId())).withRel("disciplina");
-        quizDTOResponse.add(disciplinaLink);
-        return ResponseEntity.ok(quizDTOResponse);
+    public ResponseEntity<QuizDTOResponse> findById(@PathVariable Long id, @PathVariable Long disciplinaId) throws ResourceNotFound {
+        QuizDTOResponse quiz = service.findById(id);
+
+        quiz.add(linkTo(methodOn(QuizController.class).findById(id, disciplinaId)).withSelfRel());
+
+        quiz.add(linkTo(methodOn(QuizController.class).findAll(disciplinaId)).withRel("lista-quizes"));
+
+        adicionarLinkDisciplina(quiz, disciplinaId);
+
+        quiz.add(linkTo(methodOn(QuizController.class).delete(id, disciplinaId)).withRel("deletar"));
+
+        return ResponseEntity.ok(quiz);
     }
 
-    // Não é possível criar um quiz não associados a uma disciplina
-//    @PostMapping()
-//    public ResponseEntity<QuizDTO> create(@RequestBody QuizDTO quizDTO){
-//        return new ResponseEntity<>(service.save(quizDTO), HttpStatus.CREATED);
-//    }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<QuizDTO> delete(@PathVariable Long id){
-        return new ResponseEntity<>(service.delete(id), HttpStatus.OK);
+    public ResponseEntity<Void> delete(@PathVariable Long id, @PathVariable Long disciplinaId) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    private void adicionarLinkDisciplina(QuizDTOResponse quiz, Long disciplinaId) {
+        Link disciplinaLink = linkTo(methodOn(DisciplinaController.class)
+                .findById(disciplinaId))
+                .withRel("disciplina");
+
+        quiz.add(disciplinaLink);
     }
 }
