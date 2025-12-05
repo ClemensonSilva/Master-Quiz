@@ -4,6 +4,7 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,11 +12,9 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @ToString
-public class QuizDTOResponse {
-
+public class QuizDTOResponse extends RepresentationModel<QuizDTOResponse> {
+    private long id;
     private String titulo;
-    private Set<QuestaoDTOResponse> questoes;
-    private DisciplinaDTO  disciplina;
 
 //    public static  QuizDTOResponse convert(Quiz quiz) {
 //        QuizDTOResponse response = new QuizDTOResponse();

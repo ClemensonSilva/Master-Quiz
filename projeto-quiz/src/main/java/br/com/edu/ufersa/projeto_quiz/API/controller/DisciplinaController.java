@@ -35,6 +35,7 @@ public class DisciplinaController {
     public ResponseEntity<List<ReturnAlunoDTO>> getAlunosByDisciplina(@PathVariable long id) throws ResourceNotFound {
         return new ResponseEntity<>(service.getAlunosByDisciplina(id), HttpStatus.OK);
     }
+
     @GetMapping("/{id}/professores")
     public ResponseEntity<ReturnProfessorDTO> getProfessoresByDisciplina(@PathVariable long id) throws ResourceNotFound {
         return new ResponseEntity<>(service.getProfessorByDisciplina(id), HttpStatus.OK);

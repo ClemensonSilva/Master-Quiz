@@ -1,6 +1,7 @@
 package br.com.edu.ufersa.projeto_quiz.Service;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTO;
+import br.com.edu.ufersa.projeto_quiz.API.dto.DisciplinaDTOResponse;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTOResponse;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Disciplina;
@@ -11,6 +12,7 @@ import br.com.edu.ufersa.projeto_quiz.Model.repository.QuizRepository;
 import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,15 +21,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class QuizService {
-    @Autowired
-    QuizRepository repository;
-    @Autowired
-    DisciplinaRepository disciplinaRepository;
+    public final QuizRepository repository;
     private final ModelMapper mapper;
+    public final DisciplinaService disciplinaService;
     @Autowired
-    public QuizService(ModelMapper mapper) {
+    public  QuizService(QuizRepository repository, ModelMapper mapper, @Lazy DisciplinaService disciplinaService) {
+        this.repository = repository;
         this.mapper = mapper;
+        this.disciplinaService = disciplinaService;
     }
+
 
     public List<QuizDTOResponse> findAll(){
         List<Quiz> quizes = repository.findAll();
@@ -37,11 +40,16 @@ public class QuizService {
                 .collect(Collectors.toList());
     }
 
-    public QuizDTO findById(long id){
+    public QuizDTOResponse findById(long id){
         Optional<Quiz> quiz = repository.findById(id);
         if(quiz.isPresent())
-            return mapper.map(quiz.get(), QuizDTO.class);
+            return mapper.map(quiz.get(), QuizDTOResponse.class);
         return null;
+    }
+
+    public DisciplinaDTOResponse getDisciplinaByQuiz(long id) throws ResourceNotFound {
+        DisciplinaDTOResponse disciplina = disciplinaService.getDisciplinaByQuiz(id);
+        return disciplina;
     }
 
     /**
