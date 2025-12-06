@@ -1,29 +1,21 @@
 package br.com.edu.ufersa.projeto_quiz.API.dto;
 
-import br.com.edu.ufersa.projeto_quiz.Model.entity.Alternativa;
-import br.com.edu.ufersa.projeto_quiz.Model.entity.Questao;
-import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
-public class QuestaoDTOResponse {
+/**
+ * DTO que será no frontEnd para apresentar ao client os dados do formulario de resposta
+ */
+public class QuestaoDTOResponse extends RepresentationModel<QuestaoDTOResponse> {
+    private long id;
     private String descricao;
-    private AlternativaDTO alternativaCorreta;
     private List<AlternativaDTO> alternativas;
-    private DisciplinaDTOResponse disciplinaDTOResponse;
-//
-//    public static QuestaoDTOResponse convert(Questao questao){
-//        QuestaoDTOResponse dto = new QuestaoDTOResponse();
-//        dto.setDescricao(questao.getDescricao());
-//        dto.setAlternativaCorreta(AlternativaDTO.convert(questao.getAlternativaCorreta()));
-//        dto.setAlternativas(questao.getAlternativas().stream().map(q -> AlternativaDTO.convert(q)).collect(Collectors.toList()));
-//        dto.setQuiz(QuizDTO.convert(questao.getQuiz()));
-//        return dto;
-//    }
+
 }

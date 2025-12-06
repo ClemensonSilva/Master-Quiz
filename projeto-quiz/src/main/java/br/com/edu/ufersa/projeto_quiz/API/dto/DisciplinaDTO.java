@@ -29,10 +29,5 @@ public class DisciplinaDTO {
     @NotEmpty(message = "A disciplina precisa de professor associado!")
     private Long professorId;
 
-//    public static DisciplinaDTO convert(Disciplina disciplina) {
-//        DisciplinaDTO dto = new DisciplinaDTO();
-//        dto.setNome(disciplina.getNome());
-//        dto.setProfessorId(disciplina.getProfessor().getId());
-//        return dto;
-//    }
+
 }

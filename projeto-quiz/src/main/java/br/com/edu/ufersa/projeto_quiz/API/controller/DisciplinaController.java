@@ -27,14 +27,11 @@ public class DisciplinaController {
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/quizes")
-    public ResponseEntity<List<QuizDTO>> getQuizesByDisciplina(@PathVariable long id) throws ResourceNotFound {
-        return new ResponseEntity<>(service.getQuizesByDisciplina(id), HttpStatus.OK);
-    }
     @GetMapping("/{id}/alunos")
     public ResponseEntity<List<ReturnAlunoDTO>> getAlunosByDisciplina(@PathVariable long id) throws ResourceNotFound {
         return new ResponseEntity<>(service.getAlunosByDisciplina(id), HttpStatus.OK);
     }
+
     @GetMapping("/{id}/professores")
     public ResponseEntity<ReturnProfessorDTO> getProfessoresByDisciplina(@PathVariable long id) throws ResourceNotFound {
         return new ResponseEntity<>(service.getProfessorByDisciplina(id), HttpStatus.OK);
@@ -46,10 +43,6 @@ public class DisciplinaController {
     @PostMapping("/{id}/quizes")
     public ResponseEntity<QuizDTO> addQuiz(@RequestBody QuizDTO quizDTO, @PathVariable long id) throws ResourceNotFound {
         return  new ResponseEntity<>(service.addQuiz(quizDTO, id), HttpStatus.CREATED);
-    }
-    @PostMapping("/{id}/questoes")
-    public ResponseEntity<QuestaoDTOResponse> addQuestao(@RequestBody QuestaoDTO questaoDTO, @PathVariable long id) throws ResourceNotFound {
-        return  new ResponseEntity<>(service.addQuestao(questaoDTO, id), HttpStatus.CREATED);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<DisciplinaDTO> delete(@PathVariable Long id){

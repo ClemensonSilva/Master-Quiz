@@ -28,7 +28,7 @@ public class UsuarioController {
 
 
     @GetMapping("/alunos")
-    public ResponseEntity<List<ReturnAlunoDTO>> listarTodosAlunos() throws ResourceNotFound {
+    public ResponseEntity<List<ReturnAlunoDTO>> getAlunos() throws ResourceNotFound {
         List<ReturnAlunoDTO> alunos = service.listarTodosAlunos();
         for (ReturnAlunoDTO aluno: alunos){
             Link selfAlunoLink = linkTo(methodOn(UsuarioController.class).getAluno(aluno.getId())).withSelfRel();
@@ -37,7 +37,7 @@ public class UsuarioController {
         return ResponseEntity.ok(alunos);
     }
     @GetMapping("/professores")
-    public ResponseEntity<List<ReturnProfessorDTO>> listarTodosProfessores() throws ResourceNotFound {
+    public ResponseEntity<List<ReturnProfessorDTO>> getProfessores() throws ResourceNotFound {
         List<ReturnProfessorDTO> professores = service.listarTodosProfessores();
         for (ReturnProfessorDTO professor: professores){
             Link selfProfessorLink = linkTo(methodOn(UsuarioController.class).getProfessor(professor.getId())).withSelfRel();
@@ -49,14 +49,14 @@ public class UsuarioController {
     @GetMapping("/alunos/{id}")
     public ResponseEntity<ReturnAlunoDTO> getAluno(@PathVariable Long id) throws ResourceNotFound {
         ReturnAlunoDTO aluno = service.getAluno(id);
-        aluno.add(linkTo(methodOn(UsuarioController.class).listarTodosAlunos()).withRel("allAlunos"));
+        aluno.add(linkTo(methodOn(UsuarioController.class).getAlunos()).withRel("allAlunos"));
         return ResponseEntity.ok(aluno);
     }
     @GetMapping("/professores/{id}")
     public ResponseEntity<ReturnProfessorDTO> getProfessor(@PathVariable Long id) throws ResourceNotFound {
         ReturnProfessorDTO professor = service.getProfessor(id);
 
-        professor.add(linkTo(methodOn(UsuarioController.class).listarTodosProfessores()).withRel("allprofessores"));
+        professor.add(linkTo(methodOn(UsuarioController.class).getProfessores()).withRel("allprofessores"));
         return ResponseEntity.ok(professor);
     }
     // TODO corrigir DisciplinaDTOResponse para retornar apenas id e nome, demais atributos serão links
@@ -68,7 +68,7 @@ public class UsuarioController {
         for (DisciplinaDTOResponse disciplina: disciplinas){
             disciplina.add(linkTo(methodOn(DisciplinaController.class).findById(disciplina.getId())).withSelfRel());
             disciplina.add(linkTo(methodOn(DisciplinaController.class).getProfessoresByDisciplina(disciplina.getId())).withRel("professor"));
-            disciplina.add(linkTo(methodOn(DisciplinaController.class).getQuizesByDisciplina(disciplina.getId())).withRel("quizzes"));
+            disciplina.add(linkTo(methodOn(QuizController.class).findAll(disciplina.getId())).withRel("quizzes"));
             disciplina.add(linkTo(methodOn(DisciplinaController.class).getAlunosByDisciplina(disciplina.getId())).withRel("alunos"));
         }
         return ResponseEntity.ok(disciplinas);

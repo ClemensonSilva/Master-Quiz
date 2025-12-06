@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class DisciplinaService {
     // TODO apenas disciplina deve acessar o proprio repository, os demais acessam os services de suas classes
-    private final DisciplinaRepository repository;
+    private final DisciplinaRepository disciplinaRepository;
     private final ProfessorRepository professorRepository;
     private final UsuarioService usuarioService;
     private final QuestaoRepository questaoRepository;
@@ -28,8 +28,8 @@ public class DisciplinaService {
     private final QuizService quizService;
 
     @Autowired
-    public DisciplinaService(DisciplinaRepository repository, ProfessorRepository professorRepository, UsuarioService usuarioService, ModelMapper mapper, QuizService quizService, QuestaoRepository questaoRepository) {
-        this.repository = repository;
+    public DisciplinaService(DisciplinaRepository disciplinaRepository, ProfessorRepository professorRepository, UsuarioService usuarioService, ModelMapper mapper, QuizService quizService, QuestaoRepository questaoRepository) {
+        this.disciplinaRepository = disciplinaRepository;
         this.professorRepository = professorRepository;
         this.mapper = mapper;
         this.quizService = quizService;
@@ -38,7 +38,7 @@ public class DisciplinaService {
     }
 
     public List<DisciplinaDTOResponse> findAll(){
-        List<Disciplina> disciplinas = repository.findAll();
+        List<Disciplina> disciplinas = disciplinaRepository.findAll();
 
         return disciplinas
                 .stream()
@@ -47,7 +47,7 @@ public class DisciplinaService {
     }
 
     public DisciplinaDTOResponse findById(long id){
-        Optional<Disciplina> disciplina = repository.findById(id);
+        Optional<Disciplina> disciplina = disciplinaRepository.findById(id);
         if(disciplina.isPresent())
             return mapper.map(disciplina.get(), DisciplinaDTOResponse.class);
         return null;
@@ -62,7 +62,7 @@ public class DisciplinaService {
      * @throws ResourceNotFound
      */
     public QuizDTO addQuiz(QuizDTO quizDTO, long disciplinaId) throws ResourceNotFound {
-        Disciplina  disciplina = repository.findById(disciplinaId).orElseThrow(()-> new ResourceNotFound("Disciplina não encontrada"));
+        Disciplina  disciplina = disciplinaRepository.findById(disciplinaId).orElseThrow(()-> new ResourceNotFound("Disciplina não encontrada"));
         return quizService.save(quizDTO, disciplina);
     }
 
@@ -72,19 +72,19 @@ public class DisciplinaService {
 
         Disciplina disciplina = Disciplina.convert(disciplinaDTO);
         disciplina.setProfessor(professor);
-        disciplina = repository.save(disciplina);
+        disciplina = disciplinaRepository.save(disciplina);
         return disciplinaDTO;
     }
 
     public DisciplinaDTO delete(long id){
-        Optional<Disciplina> disciplina = repository.findById(id);
+        Optional<Disciplina> disciplina = disciplinaRepository.findById(id);
         if(disciplina.isPresent())
-            repository.delete(disciplina.get());
+            disciplinaRepository.delete(disciplina.get());
         return null;
     }
 
     public List<DisciplinaDTO> findByAluno(Aluno aluno){
-        List<Disciplina> disciplinas = repository.findDisciplinaByAluno(aluno);
+        List<Disciplina> disciplinas = disciplinaRepository.findDisciplinaByAluno(aluno);
         return disciplinas
                 .stream()
                 .map((x) -> mapper.map(x, DisciplinaDTO.class))
@@ -92,7 +92,7 @@ public class DisciplinaService {
     }
 
     public List<DisciplinaDTO> findByProfessor(Professor professor){
-        List<Disciplina> disciplinas = repository.findDisciplinaByProfessor(professor);
+        List<Disciplina> disciplinas = disciplinaRepository.findDisciplinaByProfessor(professor);
         return disciplinas
                 .stream()
                 .map((x) -> mapper.map(x, DisciplinaDTO.class))
@@ -110,7 +110,7 @@ public class DisciplinaService {
      * no repositório.
      *  */
     public QuestaoDTOResponse addQuestao(QuestaoDTO questaoDTO, long disciplinaId) throws ResourceNotFound {
-        Disciplina disciplina = repository.findById(disciplinaId)
+        Disciplina disciplina = disciplinaRepository.findById(disciplinaId)
                 .orElseThrow(() -> new ResourceNotFound("Disciplina não encontrada"));
 
         Questao questao = mapper.map(questaoDTO, Questao.class);
@@ -134,6 +134,19 @@ public class DisciplinaService {
 
         List<QuizDTO> quizzes = quizService.findByDisciplina(disciplina);
         return quizzes;
+    }
+
+    public DisciplinaDTOResponse getDisciplinaByQuiz(long id) throws  ResourceNotFound{
+        Quiz quiz = new Quiz();
+        quiz.setId(id);
+
+        Disciplina disciplina = disciplinaRepository.findDisciplinaByQuizes(quiz);
+        if(disciplina == null){
+            throw new ResourceNotFound("Disciplina não encontrada");
+        }
+
+        return mapper.map(disciplina, DisciplinaDTOResponse.class);
+
     }
 
     public List<ReturnAlunoDTO> getAlunosByDisciplina(long id) throws ResourceNotFound {

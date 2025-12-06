@@ -5,6 +5,7 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Questao;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,8 +16,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 /**
  * Classe usada ao associar uma lista de questões a um quiz específico. O id do quiz é obitdo na url.
+ * Esse DTO é usado no frontEnd para o user Professor adicionar uma questão a um quiz
  */
-public class QuestaoDTO {
+public class QuestaoDTO extends RepresentationModel<QuestaoDTO> {
     @NotBlank
     @Size(min = 5, max = 25, message = "Descrição fora do escopo de 5 a 25 caracteres")
     private String descricao;
@@ -24,12 +26,5 @@ public class QuestaoDTO {
     private AlternativaDTO alternativaCorreta;
     private List<@NotEmpty AlternativaDTO> alternativas;
 
-//    public static QuestaoDTO convert(Questao questao){
-//        QuestaoDTO dto = new QuestaoDTO();
-//        dto.setDescricao(questao.getDescricao());
-//        dto.setAlternativaCorreta(AlternativaDTO.convert(questao.getAlternativaCorreta()));
-//        dto.setAlternativas(questao.getAlternativas().stream().map(q -> AlternativaDTO.convert(q)).collect(Collectors.toList()));
-//        dto.setQuizId(questao.getQuiz().getId());
-//        return dto;
-//    }
+
 }
