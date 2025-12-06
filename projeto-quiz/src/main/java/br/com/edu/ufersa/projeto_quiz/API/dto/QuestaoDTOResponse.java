@@ -16,6 +16,6 @@ import java.util.List;
 public class QuestaoDTOResponse extends RepresentationModel<QuestaoDTOResponse> {
     private long id;
     private String descricao;
-    private List<AlternativaDTO> alternativas;
+    private List<AlternativaDTOResponse> alternativas;
 
 }

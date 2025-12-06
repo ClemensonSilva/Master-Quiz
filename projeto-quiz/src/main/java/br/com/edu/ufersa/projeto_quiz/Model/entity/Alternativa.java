@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.type.NumericBooleanConverter;
 
 @Entity
 @Getter
@@ -24,11 +25,10 @@ public class Alternativa {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(nullable = false, name = "questao_id")
     private Questao questao;
+    @Column(nullable = false)
+    @Convert(converter = NumericBooleanConverter.class)
+    private Boolean correta ;
 
-    public static Alternativa convert(AlternativaDTO alternativaDTO) {
-        Alternativa alternativa = new Alternativa();
-        alternativa.setId(alternativaDTO.getId());
-        alternativa.setDescricao(alternativaDTO.getDescricao());
-        return alternativa;
-    }
+
+
 }

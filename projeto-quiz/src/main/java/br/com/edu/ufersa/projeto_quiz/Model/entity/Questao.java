@@ -22,15 +22,10 @@ public class Questao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 255, nullable = false)
     private String descricao;
 
-    // uma questao possui apenas uma alternativa correta
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "alternativa_correta_id")
-    private Alternativa alternativaCorreta;
-
-    @OneToMany(mappedBy = "questao", cascade = CascadeType.ALL) // uma questao possui muitas alternativas
+    @OneToMany(mappedBy = "questao", cascade = CascadeType.ALL, orphanRemoval = true) // uma questao possui muitas alternativas
     private List<Alternativa> alternativas = new ArrayList<>();
 
     @ManyToOne
@@ -40,19 +35,16 @@ public class Questao {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Quiz> quiz;
 
-//    public static Questao convert(QuestaoDTO dto, Quiz quiz){
-//        Questao questao = new Questao();
-//        questao.setDescricao(dto.getDescricao());
-//        questao.setAlternativaCorreta(Alternativa.convert(dto.getAlternativaCorreta()));
-//        questao.setAlternativas(dto.getAlternativas().stream().map(q -> Alternativa.convert(q)).collect(Collectors.toList()));
-//        questao.setQuiz(quiz);
-//        return questao;
-//    }
 
     public void addAlternativa(Alternativa alternativa) {
         this.alternativas.add(alternativa);
         alternativa.setQuestao(this);
     }
+    public void removeAlternativa(Alternativa alternativa) {
+        this.alternativas.remove(alternativa);
+        alternativa.setQuestao(null);
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -60,6 +52,7 @@ public class Questao {
         Questao questao = (Questao) o;
         return Objects.equals(id, questao.id);
     }
+
 
     @Override
     public int hashCode() {

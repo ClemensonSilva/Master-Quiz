@@ -23,7 +23,7 @@ public class QuizRespondidoService {
     private QuestaoRepository questaoRepository;
     @Autowired
     private AlunoRepository alunoRepository;
-
+    // TODO AInda vou corrigir e implementar a lógica
     public QuizRespondidoDTO createQuiz(QuizRespondidoDTO dto) {
 
         // TODO lancar excessoes para Alunos, Questoes, Alternativas nao cadastradas no DB
@@ -50,18 +50,18 @@ public class QuizRespondidoService {
         Questao questaoDB;
 
         // passar pelas respostas dos alunos e coletar o idQuestao
-        for(Resposta resposta  : quizRespondido.getRespostas() ){
-            questaoDB = questoesMap.get(resposta.getQuestao().getId());
-            altCorreta = questaoDB.getAlternativaCorreta();
-
-            // verALifica se a alternativaCorreta do DB é igual à alternatia correta do aluno
-            if( altCorreta!= null && altCorreta.getId().equals(resposta.getAlternativaEscolhida().getId())){
-                resposta.setStatusResposta(true);
-                taxaAcerto+= 1;
-            }else {
-                resposta.setStatusResposta(false);
-            }
-        }
+//        for(Resposta resposta  : quizRespondido.getRespostas() ){
+//            questaoDB = questoesMap.get(resposta.getQuestao().getId());
+//           // altCorreta = questaoDB.getAlternativaCorreta();
+//
+//            // verALifica se a alternativaCorreta do DB é igual à alternatia correta do aluno
+//            if( altCorreta!= null && altCorreta.getId().equals(resposta.getAlternativaEscolhida().getId())){
+//                resposta.setStatusResposta(true);
+//                taxaAcerto+= 1;
+//            }else {
+//                resposta.setStatusResposta(false);
+//            }
+//        }
 
         // taxa de respostas corretas
         quizRespondido.setPontuacaoFinal((100*taxaAcerto)/quizRespondido.getRespostas().size());

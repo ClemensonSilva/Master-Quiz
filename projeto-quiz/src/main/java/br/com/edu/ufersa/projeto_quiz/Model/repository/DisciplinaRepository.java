@@ -4,6 +4,7 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Aluno;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Disciplina;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Professor;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Quiz;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +17,6 @@ public interface DisciplinaRepository extends JpaRepository<Disciplina, Long> {
     public List<Disciplina> findDisciplinaByAluno(Aluno a);
     public List<Disciplina> findDisciplinaByProfessor(Professor p);
     public Disciplina findDisciplinaByQuizes(Quiz quiz);
+
+    Disciplina findDisciplinaById(Long id);
 }

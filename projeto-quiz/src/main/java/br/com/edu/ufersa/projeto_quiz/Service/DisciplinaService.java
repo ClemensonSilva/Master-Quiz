@@ -99,34 +99,6 @@ public class DisciplinaService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Método responsável pela persistência de questões dentro do escopo de uma disciplina
-     * @param questaoDTO, Data Transfer contendo informações sobre a questão
-     * a alternativa correta e a lista de alternativas
-     * @param disciplinaId O identificador único da Disciplina à qual a Questão pertence.
-     * @return Um {@code QuestaoDTOResponse} representando a Questão recém-criada,
-     * incluindo o ID gerado e dados mapeados para resposta.
-     * @throws ResourceNotFound Se a Disciplina com o ID fornecido não for encontrada
-     * no repositório.
-     *  */
-    public QuestaoDTOResponse addQuestao(QuestaoDTO questaoDTO, long disciplinaId) throws ResourceNotFound {
-        Disciplina disciplina = disciplinaRepository.findById(disciplinaId)
-                .orElseThrow(() -> new ResourceNotFound("Disciplina não encontrada"));
-
-        Questao questao = mapper.map(questaoDTO, Questao.class);
-
-        Alternativa alternativaCorreta = questao.getAlternativaCorreta();
-        alternativaCorreta.setQuestao(questao);
-
-        for (Alternativa alternativa : questao.getAlternativas()) {
-            alternativa.setQuestao(questao);
-        }
-
-        questao.setDisciplina(disciplina);
-
-         questaoRepository.save(questao);
-        return mapper.map(questao, QuestaoDTOResponse.class);
-    }
 
     public List<QuizDTO> getQuizesByDisciplina(long id) throws ResourceNotFound {
         Disciplina disciplina = new Disciplina();
