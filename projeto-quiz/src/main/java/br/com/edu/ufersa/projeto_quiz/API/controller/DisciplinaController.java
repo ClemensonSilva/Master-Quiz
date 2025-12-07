@@ -37,7 +37,7 @@ public class DisciplinaController {
         return new ResponseEntity<>(service.getProfessorByDisciplina(id), HttpStatus.OK);
     }
     @PostMapping()
-    public ResponseEntity<DisciplinaDTO> create(@RequestBody DisciplinaDTO disciplinaDTO){
+    public ResponseEntity<DisciplinaDTOResponse> create(@RequestBody DisciplinaDTO disciplinaDTO){
         return new ResponseEntity<>(service.save(disciplinaDTO), HttpStatus.CREATED);
     }
     @PostMapping("/{id}/quizes")

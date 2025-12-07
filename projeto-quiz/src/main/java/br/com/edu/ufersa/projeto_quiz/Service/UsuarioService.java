@@ -181,7 +181,7 @@ public class UsuarioService {
      * @throws ResourceNotFound
      */
     @Transactional
-    public MatriculaResponseDTO enrollAluno(@Valid MatriculaInputDTO matriculaInputDTO, long alunoId) throws ResourceNotFound {
+    public MatriculaResponseDTO enrollAluno(@Valid MatriculaInputDTO matriculaInputDTO, long alunoId) throws ResourceNotFound, BusinessLogicException {
         Usuario user = usuarioRepository.findById(alunoId)
                 .orElseThrow(() -> new ResourceNotFound("Usuário não encontrado"));
 

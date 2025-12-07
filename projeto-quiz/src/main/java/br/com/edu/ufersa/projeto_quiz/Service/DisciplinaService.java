@@ -26,15 +26,17 @@ public class DisciplinaService {
     private final QuestaoRepository questaoRepository;
     private final ModelMapper mapper;
     private final QuizService quizService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public DisciplinaService(DisciplinaRepository disciplinaRepository, ProfessorRepository professorRepository, UsuarioService usuarioService, ModelMapper mapper, QuizService quizService, QuestaoRepository questaoRepository) {
+    public DisciplinaService(DisciplinaRepository disciplinaRepository, ProfessorRepository professorRepository, UsuarioService usuarioService, ModelMapper mapper, QuizService quizService, QuestaoRepository questaoRepository, ModelMapper modelMapper) {
         this.disciplinaRepository = disciplinaRepository;
         this.professorRepository = professorRepository;
         this.mapper = mapper;
         this.quizService = quizService;
         this.usuarioService = usuarioService;
         this.questaoRepository = questaoRepository;
+        this.modelMapper = modelMapper;
     }
 
     public List<DisciplinaDTOResponse> findAll(){
@@ -66,14 +68,14 @@ public class DisciplinaService {
         return quizService.save(quizDTO, disciplina);
     }
 
-    public DisciplinaDTO save(DisciplinaDTO disciplinaDTO){
+    public DisciplinaDTOResponse save(DisciplinaDTO disciplinaDTO){
         Professor professor = professorRepository.findById(disciplinaDTO.getProfessorId())
                 .orElseThrow(() -> new DataIntegrityViolationException("Professor nao cadastrado"));
 
         Disciplina disciplina = Disciplina.convert(disciplinaDTO);
         disciplina.setProfessor(professor);
-        disciplina = disciplinaRepository.save(disciplina);
-        return disciplinaDTO;
+        disciplinaRepository.save(disciplina);
+        return modelMapper.map(disciplina, DisciplinaDTOResponse.class);
     }
 
     public DisciplinaDTO delete(long id){

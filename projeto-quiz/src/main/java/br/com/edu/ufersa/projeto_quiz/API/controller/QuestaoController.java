@@ -3,6 +3,7 @@ package br.com.edu.ufersa.projeto_quiz.API.controller;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuestaoDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuestaoDTOResponse;
 import br.com.edu.ufersa.projeto_quiz.Service.QuestaoService;
+import br.com.edu.ufersa.projeto_quiz.exception.BusinessLogicException;
 import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +97,7 @@ public class QuestaoController {
      */
     @PostMapping
     public ResponseEntity<QuestaoDTOResponse> create(@PathVariable long disciplinaId,
-                                                     @Valid @RequestBody QuestaoDTO dto) throws ResourceNotFound {
+                                                     @Valid @RequestBody QuestaoDTO dto) throws ResourceNotFound, BusinessLogicException {
 
         QuestaoDTOResponse questaoDTOResponse = service.save(dto, disciplinaId);
         addSelfLink(questaoDTOResponse, questaoDTOResponse.getId(), disciplinaId);

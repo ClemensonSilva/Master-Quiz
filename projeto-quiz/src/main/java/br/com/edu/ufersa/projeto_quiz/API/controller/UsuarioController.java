@@ -2,6 +2,7 @@ package br.com.edu.ufersa.projeto_quiz.API.controller;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.*;
 import br.com.edu.ufersa.projeto_quiz.Service.UsuarioService;
+import br.com.edu.ufersa.projeto_quiz.exception.BusinessLogicException;
 import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/alunos/{id}/disciplinas")
-    public ResponseEntity<MatriculaResponseDTO> enroll(@Valid @RequestBody MatriculaInputDTO matriculaInputDTO, @PathVariable long id) throws ResourceNotFound {
+    public ResponseEntity<MatriculaResponseDTO> enroll(@Valid @RequestBody MatriculaInputDTO matriculaInputDTO, @PathVariable long id) throws ResourceNotFound, BusinessLogicException {
         return new ResponseEntity<>(service.enrollAluno(matriculaInputDTO, id), HttpStatus.CREATED);
     }
 

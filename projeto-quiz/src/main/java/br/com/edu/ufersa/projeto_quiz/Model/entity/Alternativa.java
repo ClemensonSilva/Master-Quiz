@@ -22,7 +22,7 @@ public class Alternativa {
     private String descricao;
 
     // muitas alternativas estao associadas a uma questao
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "questao_id")
     private Questao questao;
     @Column(nullable = false)

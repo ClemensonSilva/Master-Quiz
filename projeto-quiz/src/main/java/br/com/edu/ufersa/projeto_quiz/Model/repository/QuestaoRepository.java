@@ -13,4 +13,6 @@ public interface QuestaoRepository extends JpaRepository<Questao, Long> {
      Questao findQuestaoById(Long id);
      List<Questao> findQuestoesByQuiz(Quiz q);
      List<Questao> findAllByDisciplina(Disciplina disciplina);
+
+    Questao findQuestaoByIdAndDisciplina(long questaoId, Disciplina disciplina);
 }
