@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,5 +16,5 @@ import java.util.stream.Collectors;
 public class QuizDTOResponse extends RepresentationModel<QuizDTOResponse> {
     private long id;
     private String titulo;
-
+    private List<QuestaoDTOResponse> questoes;
 }
