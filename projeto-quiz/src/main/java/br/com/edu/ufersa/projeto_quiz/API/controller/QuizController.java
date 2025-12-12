@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -96,6 +97,7 @@ public class QuizController {
      * @throws BusinessLogicException se regras de negócio forem violadas (ex: questão duplicada).
      */
     @PostMapping("/{id}/questoes/{questaoId}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<QuizDTOResponse> addQuestao(@PathVariable long disciplinaId,
                                                       @PathVariable long id,
                                                       @PathVariable long questaoId)
@@ -115,6 +117,7 @@ public class QuizController {
      * @throws BusinessLogicException se houver inconsistências na remoção.
      */
     @DeleteMapping("/{id}/questoes/{questaoId}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<Void> removeQuestao(@PathVariable long disciplinaId,
                                               @PathVariable long id,
                                               @PathVariable long questaoId)
@@ -134,6 +137,7 @@ public class QuizController {
      * @throws ResourceNotFound caso o quiz ou disciplina não existam.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<QuizDTOResponse> edit(@RequestBody QuizDTO quizDTO,
                                                 @PathVariable long disciplinaId,
                                                 @PathVariable long id) throws ResourceNotFound {
@@ -149,6 +153,7 @@ public class QuizController {
      * @return resposta sem conteúdo com status 204 No Content.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<Void> delete(@PathVariable Long id, @PathVariable Long disciplinaId) {
         service.delete(id);
         return ResponseEntity.noContent().build();

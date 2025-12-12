@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -101,6 +102,7 @@ public class AlternativaController {
      * @throws ResourceNotFound Caso disciplina ou questão não existam.
      */
     @PostMapping
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<AlternativaDTOResponse> create(
             @PathVariable long disciplinaId,
             @PathVariable long questaoId,
@@ -125,6 +127,7 @@ public class AlternativaController {
      * @throws ResourceNotFound Caso a alternativa, questão ou disciplina não existam.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<AlternativaDTOResponse> update(
             @PathVariable long disciplinaId,
             @PathVariable long questaoId,
@@ -149,6 +152,7 @@ public class AlternativaController {
      * @throws ResourceNotFound Caso a alternativa, questão ou disciplina não existam.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<Void> delete(
             @PathVariable long disciplinaId,
             @PathVariable long questaoId,

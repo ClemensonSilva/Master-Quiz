@@ -8,6 +8,7 @@ import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,6 +64,7 @@ public class QuestaoController {
      * @throws ResourceNotFound caso a questão não seja encontrada.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<Void> delete(@PathVariable long disciplinaId, @PathVariable Long id) throws ResourceNotFound {
         service.delete(id);
         return ResponseEntity.noContent().build();
@@ -78,6 +80,7 @@ public class QuestaoController {
      * @throws ResourceNotFound caso a questão não seja encontrada.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<QuestaoDTOResponse> edit(@PathVariable long disciplinaId,
                                                    @PathVariable Long id,
                                                    @Valid @RequestBody QuestaoDTO dto) throws ResourceNotFound {
@@ -96,6 +99,7 @@ public class QuestaoController {
      * @throws ResourceNotFound caso a disciplina não seja encontrada.
      */
     @PostMapping
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<QuestaoDTOResponse> create(@PathVariable long disciplinaId,
                                                      @Valid @RequestBody QuestaoDTO dto) throws ResourceNotFound, BusinessLogicException {
 

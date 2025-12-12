@@ -6,6 +6,7 @@ import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,6 +56,7 @@ public class DisciplinaController {
      * @throws ResourceNotFound caso a disciplina não exista.
      */
     @GetMapping("/{id}/alunos")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<List<ReturnAlunoDTO>> getAlunosByDisciplina(@PathVariable long id) throws ResourceNotFound {
         return new ResponseEntity<>(service.getAlunosByDisciplina(id), HttpStatus.OK);
     }
@@ -83,6 +85,7 @@ public class DisciplinaController {
      * @throws ResourceNotFound caso a disciplina não exista.
      */
     @PostMapping("/{id}/quizes")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<QuizDTO> addQuiz(@RequestBody QuizDTO quizDTO, @PathVariable long id) throws ResourceNotFound {
         return new ResponseEntity<>(service.addQuiz(quizDTO, id), HttpStatus.CREATED);
     }
@@ -96,6 +99,7 @@ public class DisciplinaController {
      * @throws ResourceNotFound caso a disciplina não exista.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<DisciplinaDTOResponse> edit(@RequestBody DisciplinaDTO disciplinaDTO, @PathVariable Long id) throws ResourceNotFound {
         return new ResponseEntity<>(service.edit(disciplinaDTO, id), HttpStatus.OK);
     }
@@ -107,6 +111,7 @@ public class DisciplinaController {
      * @return resposta sem conteúdo com status 204 NO CONTENT.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
