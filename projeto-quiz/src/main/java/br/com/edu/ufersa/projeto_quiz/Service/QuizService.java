@@ -108,6 +108,7 @@ public class QuizService {
         }
 
         quiz.setTitulo(quizDTO.getTitulo());
+        repository.save(quiz);
         return mapper.map(quiz, QuizDTOResponse.class);
     }
 
