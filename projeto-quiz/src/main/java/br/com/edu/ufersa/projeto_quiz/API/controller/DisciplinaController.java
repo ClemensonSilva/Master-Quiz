@@ -10,42 +10,105 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controlador responsável por gerenciar operações relacionadas às disciplinas.
+ *
+ * <p>Este controlador expõe endpoints para listar, consultar, criar, editar e remover disciplinas,
+ * além de retornar alunos, professores e quizzes vinculados a uma disciplina específica.</p>
+ *
+ * @author
+ */
 @RestController
 @RequestMapping("/api/v1/disciplinas")
 public class DisciplinaController {
+
     @Autowired
     private DisciplinaService service;
 
-// TODO implementar os outros controllers dos demais servicos que estao em serviceDisciplica
-   @GetMapping()
-    public ResponseEntity<List<DisciplinaDTOResponse>> findAll(){
+    /**
+     * Retorna todas as disciplinas cadastradas.
+     *
+     * @return lista de {@link DisciplinaDTOResponse} com status 200 OK.
+     */
+    @GetMapping()
+    public ResponseEntity<List<DisciplinaDTOResponse>> findAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
+    /**
+     * Busca uma disciplina pelo ID informado.
+     *
+     * @param id identificador da disciplina.
+     * @return representação da disciplina encontrada.
+     * @throws ResourceNotFound caso a disciplina não exista.
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<DisciplinaDTOResponse> findById(@PathVariable Long id){
+    public ResponseEntity<DisciplinaDTOResponse> findById(@PathVariable Long id) {
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 
+    /**
+     * Retorna todos os alunos matriculados em uma disciplina específica.
+     *
+     * @param id identificador da disciplina.
+     * @return lista de alunos.
+     * @throws ResourceNotFound caso a disciplina não exista.
+     */
     @GetMapping("/{id}/alunos")
     public ResponseEntity<List<ReturnAlunoDTO>> getAlunosByDisciplina(@PathVariable long id) throws ResourceNotFound {
         return new ResponseEntity<>(service.getAlunosByDisciplina(id), HttpStatus.OK);
     }
 
+    /**
+     * Retorna o professor responsável por uma disciplina.
+     *
+     * @param id identificador da disciplina.
+     * @return DTO com informações do professor.
+     * @throws ResourceNotFound caso a disciplina não exista.
+     */
     @GetMapping("/{id}/professores")
     public ResponseEntity<ReturnProfessorDTO> getProfessoresByDisciplina(@PathVariable long id) throws ResourceNotFound {
         return new ResponseEntity<>(service.getProfessorByDisciplina(id), HttpStatus.OK);
     }
-    @PostMapping()
-    public ResponseEntity<DisciplinaDTOResponse> create(@RequestBody DisciplinaDTO disciplinaDTO){
-        return new ResponseEntity<>(service.save(disciplinaDTO), HttpStatus.CREATED);
-    }
+
+    /**
+     * Adiciona um quiz a uma disciplina específica.
+     *
+     * <p>No futuro, este endpoint deverá validar o professor responsável
+     * através do {@code UsuarioController}.</p>
+     *
+     * @param quizDTO dados do quiz que será criado.
+     * @param id identificador da disciplina.
+     * @return quiz criado com status 201 CREATED.
+     * @throws ResourceNotFound caso a disciplina não exista.
+     */
     @PostMapping("/{id}/quizes")
     public ResponseEntity<QuizDTO> addQuiz(@RequestBody QuizDTO quizDTO, @PathVariable long id) throws ResourceNotFound {
-        return  new ResponseEntity<>(service.addQuiz(quizDTO, id), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.addQuiz(quizDTO, id), HttpStatus.CREATED);
     }
+
+    /**
+     * Atualiza os dados de uma disciplina existente.
+     *
+     * @param disciplinaDTO dados atualizados.
+     * @param id identificador da disciplina a ser editada.
+     * @return disciplina editada.
+     * @throws ResourceNotFound caso a disciplina não exista.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<DisciplinaDTOResponse> edit(@RequestBody DisciplinaDTO disciplinaDTO, @PathVariable Long id) throws ResourceNotFound {
+        return new ResponseEntity<>(service.edit(disciplinaDTO, id), HttpStatus.OK);
+    }
+
+    /**
+     * Remove uma disciplina pelo ID informado.
+     *
+     * @param id identificador da disciplina.
+     * @return resposta sem conteúdo com status 204 NO CONTENT.
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<DisciplinaDTO> delete(@PathVariable Long id){
-        return new ResponseEntity<>(service.delete(id), HttpStatus.OK);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

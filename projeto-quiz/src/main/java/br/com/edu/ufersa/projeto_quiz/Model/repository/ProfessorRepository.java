@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface ProfessorRepository extends JpaRepository<Professor, Long> {
     //Encontra o professor buscando pelo nome da disciplina
     Optional<Professor> findDistinctByDisciplinas_Nome(String nomeDisciplina);
+
+    Professor findProfessorById(Long id);
 }

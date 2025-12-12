@@ -18,44 +18,85 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-// import org.springframework.security.crypto.password.PasswordEncoder; // Removido por enquanto
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service responsável pela gestão de usuários, incluindo operações relacionadas
+ * a alunos, professores e seus relacionamentos com disciplinas.
+ *
+ * Este service centraliza:
+ * <ul>
+ *   <li>Criação e atualização de usuários</li>
+ *   <li>Listagem de usuários</li>
+ *   <li>Gerenciamento de matrículas (aluno ↔ disciplina)</li>
+ *   <li>Associação professor ↔ disciplina</li>
+ *   <li>Consultas personalizadas</li>
+ * </ul>
+ */
 @Service
 public class UsuarioService {
+
     private final UsuarioRepository usuarioRepository;
     private final AlunoRepository alunoRepository;
     private final ModelMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final DisciplinaRepository disciplinaRepository;
+    private final ProfessorRepository professorRepository;
 
+    /**
+     * Construtor para injeção de dependências do service.
+     *
+     * @param usuarioRepository repositório de usuários
+     * @param mapper mapeador de entidades e DTOs
+     * @param alunoRepository repositório de alunos
+     * @param passwordEncoder codificador de senhas
+     * @param disciplinaRepository repositório de disciplinas
+     * @param professorRepository repositório de professores
+     */
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper mapper, AlunoRepository alunoRepository, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper mapper,
+                          AlunoRepository alunoRepository, PasswordEncoder passwordEncoder,
+                          DisciplinaRepository disciplinaRepository, ProfessorRepository professorRepository) {
+
         this.usuarioRepository = usuarioRepository;
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
         this.alunoRepository = alunoRepository;
+        this.disciplinaRepository = disciplinaRepository;
+        this.professorRepository = professorRepository;
     }
 
-    @Autowired
-    public ProfessorRepository professorRepository;
-    @Autowired
-    public DisciplinaRepository disciplinaRepository;
-
+    /**
+     * Cria um novo aluno no sistema.
+     *
+     * @param dto dados de entrada do aluno
+     * @return DTO contendo os dados do aluno criado
+     * @throws DataIntegrityViolationException caso já exista um usuário com o e-mail informado
+     */
     public ReturnAlunoDTO criarAluno(@Valid InputAlunoDTO dto) throws DataIntegrityViolationException {
         Usuario usuarioExistente = usuarioRepository.findByEmail(dto.getEmail());
         if (usuarioExistente != null) {
             throw new DataIntegrityViolationException("Já existe um usuário cadastrado com o mesmo email");
         }
+
         Aluno novoAluno = mapper.map(dto, Aluno.class);
         novoAluno.setSenha(passwordEncoder.encode(dto.getSenha()));
+
         Aluno alunoSalvo = usuarioRepository.save(novoAluno);
         return mapper.map(alunoSalvo, ReturnAlunoDTO.class);
     }
 
+    /**
+     * Cria um novo professor no sistema.
+     *
+     * @param dto dados do professor
+     * @return DTO com os dados do professor salvo
+     * @throws DataIntegrityViolationException quando o email já está cadastrado
+     */
     public ReturnProfessorDTO criarProfessor(InputProfessorDTO dto) throws DataIntegrityViolationException {
         Usuario usuarioExistente = usuarioRepository.findByEmail(dto.getEmail());
         if (usuarioExistente != null) {
@@ -64,29 +105,68 @@ public class UsuarioService {
 
         Professor novoProfessor = mapper.map(dto, Professor.class);
         novoProfessor.setSenha(passwordEncoder.encode(dto.getSenha()));
+
         Professor professorSalvo = usuarioRepository.save(novoProfessor);
         return mapper.map(professorSalvo, ReturnProfessorDTO.class);
     }
 
+    /**
+     * Busca um aluno pelo ID.
+     *
+     * @param id identificador do aluno
+     * @return DTO com dados do aluno encontrado
+     * @throws ResourceNotFound caso o aluno não exista
+     */
     public ReturnAlunoDTO getAluno(long id) throws ResourceNotFound {
-        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Aluno não encontrado"));
+        Aluno aluno = alunoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Aluno não encontrado"));
+
         return mapper.map(aluno, ReturnAlunoDTO.class);
     }
+
+    /**
+     * Busca um professor pelo ID.
+     *
+     * @param id identificador do professor
+     * @return DTO com dados do professor
+     * @throws ResourceNotFound caso o professor não exista
+     */
     public ReturnProfessorDTO getProfessor(Long id) throws ResourceNotFound {
-        Professor professor = professorRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Professor não encontrado"));
+        Professor professor = professorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Professor não encontrado"));
+
         return mapper.map(professor, ReturnProfessorDTO.class);
     }
 
-
+    /**
+     * Lista todos os alunos cadastrados.
+     *
+     * @return lista de alunos em formato DTO
+     */
     public List<ReturnAlunoDTO> listarTodosAlunos() {
         List<Aluno> alunos = alunoRepository.findAll();
-       return  alunos.stream().map(aluno -> mapper.map(aluno, ReturnAlunoDTO.class)).toList();
-    }
-    public List<ReturnProfessorDTO> listarTodosProfessores() {
-        List<Professor> professores = professorRepository.findAll();
-        return  professores.stream().map(professor -> mapper.map(professor, ReturnProfessorDTO.class)).toList();
+        return alunos.stream()
+                .map(aluno -> mapper.map(aluno, ReturnAlunoDTO.class))
+                .toList();
     }
 
+    /**
+     * Lista todos os professores cadastrados.
+     *
+     * @return lista de professores em formato DTO
+     */
+    public List<ReturnProfessorDTO> listarTodosProfessores() {
+        List<Professor> professores = professorRepository.findAll();
+        return professores.stream()
+                .map(professor -> mapper.map(professor, ReturnProfessorDTO.class))
+                .toList();
+    }
+
+    /**
+     * Lista todos os usuários do sistema (alunos e professores).
+     *
+     * @return lista de usuários convertidos para DTOs específicos de seu tipo
+     */
     public List<ReturnUsuarioDTO> listarTodosUsuarios() {
         List<Usuario> todosUsuarios = usuarioRepository.findAll();
 
@@ -99,6 +179,15 @@ public class UsuarioService {
             return null;
         }).collect(Collectors.toList());
     }
+
+    /**
+     * Atualiza os dados de um aluno existente.
+     *
+     * @param id identificador do aluno
+     * @param dto dados atualizados
+     * @return DTO do aluno atualizado
+     * @throws ResourceNotFound quando o ID não pertence a um aluno
+     */
     public ReturnAlunoDTO atualizarAluno(Long id, InputAlunoDTO dto) throws ResourceNotFound {
         Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Aluno não encontrado para atualização"));
@@ -119,6 +208,14 @@ public class UsuarioService {
         return mapper.map(alunoSalvo, ReturnAlunoDTO.class);
     }
 
+    /**
+     * Atualiza os dados de um professor.
+     *
+     * @param id identificador do professor
+     * @param dto dados atualizados
+     * @return DTO do professor salvo
+     * @throws ResourceNotFound quando o ID não pertence a um professor
+     */
     public ReturnProfessorDTO atualizarProfessor(Long id, InputProfessorDTO dto) throws ResourceNotFound {
         Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Professor não encontrado para atualização"));
@@ -128,7 +225,7 @@ public class UsuarioService {
         }
 
         Usuario usuarioComEmail = usuarioRepository.findByEmail(dto.getEmail());
-        if (usuarioComEmail!= null && !usuarioComEmail.getId().equals(id)) {
+        if (usuarioComEmail != null && !usuarioComEmail.getId().equals(id)) {
             throw new DataIntegrityViolationException("O e-mail informado já está em uso por outro usuário.");
         }
 
@@ -139,74 +236,117 @@ public class UsuarioService {
         return mapper.map(professorSalvo, ReturnProfessorDTO.class);
     }
 
+    /**
+     * Remove um usuário do sistema.
+     *
+     * @param id identificador do usuário
+     */
     public void deletar(Long id) {
         usuarioRepository.deleteById(id);
     }
 
     /**
-     * Metodo que será usada para buscar as diciplinas associadas ao aluno ou ao professor
-     * passado no parâmetro como o id do usuário. Após isso, verifica-se se o user é Aluno ou
-     * Professor e, baseando-se nisso, busca as disciplinas correspondentes ao tipo de usuário.
-     * @param userId
-     * @return List<DisciplinaDTO>
+     * Obtém todas as disciplinas associadas a um usuário (aluno ou professor).
+     *
+     * @param userId ID do usuário
+     * @return lista de disciplinas em formato DTO
+     * @throws ResourceNotFound caso o usuário não exista ou não esteja associado a disciplinas
      */
     public List<DisciplinaDTOResponse> disciplinasByUser(long userId) throws ResourceNotFound {
-        Usuario user = usuarioRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("Usuário não encontrado"));
+        Usuario user = usuarioRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFound("Usuário não encontrado"));
 
         List<Disciplina> disciplinas = new ArrayList<>();
 
         if (user instanceof Professor) {
-             disciplinas = disciplinaRepository.findDisciplinaByProfessor((Professor) user);
+            disciplinas = disciplinaRepository.findDisciplinaByProfessor((Professor) user);
         } else if (user instanceof Aluno) {
-             disciplinas = disciplinaRepository.findDisciplinaByAluno((Aluno) user);
+            disciplinas = disciplinaRepository.findDisciplinaByAluno((Aluno) user);
         }
 
         if (disciplinas == null || disciplinas.isEmpty()) {
-            throw new ResourceNotFound(
-                    "Nenhuma disciplina encontrada para o usuário: " + user.getId()
-            );
+            throw new ResourceNotFound("Nenhuma disciplina encontrada para o usuário: " + user.getId());
         }
-        return disciplinas
-                .stream()
-                .map((x) -> mapper.map(x, DisciplinaDTOResponse.class))
-                .collect(Collectors.toList());
 
-}
+        return disciplinas.stream()
+                .map(x -> mapper.map(x, DisciplinaDTOResponse.class))
+                .collect(Collectors.toList());
+    }
 
     /**
-     * Método usado para matricular um aluno em uma disciplina
-     * @param matriculaInputDTO
-     * @param alunoId
-     * @return MatriculaResponseDTO
-     * @throws ResourceNotFound
+     * Matricula um aluno em uma disciplina.
+     *
+     * @param matriculaInputDTO dados contendo o ID da disciplina
+     * @param alunoId ID do aluno a ser matriculado
+     * @return DTO contendo aluno e disciplina resultante da matrícula
+     * @throws ResourceNotFound quando o aluno ou a disciplina não existem
+     * @throws BusinessLogicException quando um professor tenta se matricular
      */
     @Transactional
-    public MatriculaResponseDTO enrollAluno(@Valid MatriculaInputDTO matriculaInputDTO, long alunoId) throws ResourceNotFound, BusinessLogicException {
+    public MatriculaResponseDTO enrollAluno(@Valid MatriculaInputDTO matriculaInputDTO, long alunoId)
+            throws ResourceNotFound, BusinessLogicException {
+
         Usuario user = usuarioRepository.findById(alunoId)
                 .orElseThrow(() -> new ResourceNotFound("Usuário não encontrado"));
 
         if (user instanceof Professor) {
-            throw  new BusinessLogicException("Professor não pode matricular-se em disciplinas");
+            throw new BusinessLogicException("Professor não pode matricular-se em disciplinas");
         }
 
         Optional<Disciplina> disciplina = disciplinaRepository.findById(matriculaInputDTO.getDisciplinaId());
-
-        if (!disciplina.isPresent()) throw  new ResourceNotFound("Usuário não encontrado");
+        if (!disciplina.isPresent()) {
+            throw new ResourceNotFound("Usuário não encontrado");
+        }
 
         disciplina.get().getAluno().add((Aluno) user);
-
         disciplinaRepository.save(disciplina.get());
 
-        return new MatriculaResponseDTO(mapper.map(disciplina.get(), DisciplinaDTO.class), mapper.map(user, ReturnAlunoDTO.class));
-
+        return new MatriculaResponseDTO(
+                mapper.map(disciplina.get(), DisciplinaDTO.class),
+                mapper.map(user, ReturnAlunoDTO.class)
+        );
     }
 
+    /**
+     * Obtém todos os alunos matriculados em uma disciplina.
+     *
+     * @param id ID da disciplina
+     * @return lista de alunos matriculados
+     * @throws ResourceNotFound quando não há alunos matriculados
+     */
     public List<ReturnAlunoDTO> getAlunosByDisciplina(long id) throws ResourceNotFound {
         Disciplina disciplina = new Disciplina();
         disciplina.setId(id);
-        List<Aluno> alunos = alunoRepository.findByDisciplinas(disciplina);
-        if(alunos.isEmpty()) throw new ResourceNotFound("Nenhuma aluno matriculado na disciplina "+ disciplina.getNome());
 
-        return alunos.stream().map(x -> mapper.map(x, ReturnAlunoDTO.class)).toList();
+        List<Aluno> alunos = alunoRepository.findByDisciplinas(disciplina);
+
+        if (alunos.isEmpty()) {
+            throw new ResourceNotFound("Nenhum aluno matriculado na disciplina " + disciplina.getNome());
+        }
+
+        return alunos.stream()
+                .map(x -> mapper.map(x, ReturnAlunoDTO.class))
+                .toList();
+    }
+
+    /**
+     * Cria uma disciplina associada a um professor específico.
+     *
+     * @param disciplinaDTO dados da disciplina
+     * @param id ID do professor criador
+     * @return DTO contendo os dados da disciplina criada
+     * @throws BusinessLogicException caso o ID não pertença a um professor
+     */
+    public DisciplinaDTOResponse createDisciplina(DisciplinaDTO disciplinaDTO, long id) throws BusinessLogicException {
+        Professor professor = professorRepository.findProfessorById(id);
+
+        if (professor == null) {
+            throw new BusinessLogicException("Apenas professores podem criar disciplinas");
+        }
+
+        Disciplina disciplina = new Disciplina();
+        disciplina.setNome(disciplinaDTO.getNome());
+
+        return mapper.map(disciplina, DisciplinaDTOResponse.class);
     }
 }
