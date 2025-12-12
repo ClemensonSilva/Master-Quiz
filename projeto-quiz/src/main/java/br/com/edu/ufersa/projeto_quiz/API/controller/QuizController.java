@@ -1,10 +1,13 @@
 package br.com.edu.ufersa.projeto_quiz.API.controller;
 
+import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTOResponse;
 import br.com.edu.ufersa.projeto_quiz.Service.QuizService;
+import br.com.edu.ufersa.projeto_quiz.exception.BusinessLogicException;
 import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,6 +57,28 @@ public class QuizController {
         quiz.add(linkTo(methodOn(QuizController.class).delete(id, disciplinaId)).withRel("deletar"));
 
         return ResponseEntity.ok(quiz);
+    }
+
+    @PostMapping("/{id}/questoes/{questaoId}")
+    public ResponseEntity<QuizDTOResponse> addQuestao(@PathVariable long disciplinaId,
+                                           @PathVariable long id,
+                                           @PathVariable long questaoId) throws ResourceNotFound, BusinessLogicException {
+        return  new ResponseEntity<>(service.addQuestao(disciplinaId, id, questaoId), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}/questoes/{questaoId}")
+    public ResponseEntity<Void> removeQuestao(@PathVariable long disciplinaId,
+                                              @PathVariable long id,
+                                              @PathVariable long questaoId) throws ResourceNotFound, BusinessLogicException {
+        service.removeQuestao(disciplinaId, id, questaoId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<QuizDTOResponse> edit(@RequestBody QuizDTO quizDTO,
+                                                @PathVariable long disciplinaId,
+                                                @PathVariable long id) throws ResourceNotFound {
+        return  new ResponseEntity<>(service.update(quizDTO, id, disciplinaId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -31,6 +31,14 @@ public class Quiz {
     @JoinColumn(name = "disciplina_id")
     private Disciplina disciplina;
 
+    public void addQuestao(Questao questao){
+        this.questoes.add(questao);
+    }
+    public void removeQuestao(Questao questao){
+        this.questoes.remove(questao);
+    }
+
+
     public static Quiz convert(QuizDTO quizDTO, Disciplina disciplina, Set<Questao> questoes) {
         Quiz quiz = convert(quizDTO, disciplina);
         quiz.setQuestoes(questoes);
