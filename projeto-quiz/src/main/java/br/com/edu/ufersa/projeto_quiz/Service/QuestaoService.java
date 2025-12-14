@@ -171,4 +171,22 @@ public class QuestaoService {
                 .map(x -> mapper.map(x, QuestaoDTO.class))
                 .collect(Collectors.toList());
     }
+
+    public QuestaoDTO edit(long id,@Valid QuestaoDTO dto) throws ResourceNotFound {
+        Questao questao = repository.findQuestaoById(id);
+
+        if(questao == null ) {
+            throw new ResourceNotFound("Questão não encontrada");
+        }
+
+        questao.setDescricao(dto.getDescricao());
+        questao.setAlternativaCorreta(mapper.map(dto.getAlternativaCorreta(), Alternativa.class));
+        questao.setAlternativas(
+                dto.getAlternativas()
+                        .stream()
+                        .map((x) -> mapper.map(x, Alternativa.class))
+                        .toList());
+
+        return mapper.map(questao, QuestaoDTO.class);
+    }
 }
