@@ -1,17 +1,13 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
-import br.com.edu.ufersa.projeto_quiz.API.dto.QuizRespondidoDTO;
-import br.com.edu.ufersa.projeto_quiz.API.dto.RespostaDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 // um QuizRespondido pertence a um único aluno e um aluno possui 0..n QuizesRespondidos
 
@@ -22,7 +18,7 @@ import java.util.stream.Collectors;
 @Table(name = "tb_quiz_respondido")
 public class QuizRespondido {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,7 +33,7 @@ public class QuizRespondido {
     private Double pontuacaoFinal ;
 
     @Column(nullable = false, name = "data_tentativa")
-    private LocalDate dataTentativa;
+    private LocalDateTime dataTentativa;
 
     // o mapeamento é feito a partir do atributo quizRespondido da entidade Resposta
     // quando uma resposta é removida da entitdade QuizRespondido, ela tambem é removida da Resposta
@@ -46,16 +42,6 @@ public class QuizRespondido {
     private Set<Resposta> respostas;
 
 
-    public static QuizRespondido convert(QuizRespondidoDTO qrDTO){
-        QuizRespondido quizRespondido = new QuizRespondido();
-        quizRespondido.setAluno(qrDTO.getAluno());
-        quizRespondido.setQuiz(qrDTO.getQuiz());
-        quizRespondido.setRespostas(qrDTO.getRespostasDTO()
-                .stream()
-                .map(respostaDTO -> Resposta.convert(respostaDTO))
-                .collect(Collectors.toSet()));
-        return quizRespondido;
-    }
 
     @Override
     public boolean equals(Object o) {

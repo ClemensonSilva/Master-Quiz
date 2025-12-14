@@ -14,8 +14,10 @@ import java.util.List;
 @Repository
 public interface QuizRespondidoRepository extends JpaRepository<QuizRespondido, Long> {
     // TODO o objeto retornado deve ser um DTO
-    public List<QuizRespondido> findByAluno(Aluno aluno);
-    public QuizRespondido findQuizRespondidoById(Long id);
-    public  QuizRespondido findByQuiz(Quiz quiz); // para encontrar todos as respostas para dado quiz
-    public List<QuizRespondido> findByAlunoAndDataTentativaBetween(Aluno aluno,  LocalDate dataInicio,  LocalDate dataFim);
+    List<QuizRespondido> findByAluno(Aluno aluno);
+    QuizRespondido findQuizRespondidoById(Long id);
+    QuizRespondido findByQuiz(Quiz quiz); // para encontrar todos as respostas para dado quiz
+    List<QuizRespondido> findByAlunoAndDataTentativaBetween(Aluno aluno,  LocalDate dataInicio,  LocalDate dataFim);
+    QuizRespondido findQuizRespondidoByAlunoAndQuiz(Aluno aluno, Quiz quiz);
+
 }

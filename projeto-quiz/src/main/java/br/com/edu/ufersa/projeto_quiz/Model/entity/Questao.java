@@ -35,7 +35,13 @@ public class Questao {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Quiz> quiz;
 
+    public void addRelQuestaoQuiz(Quiz quiz){
+        this.quiz.add(quiz);
+    }
 
+    public void removeRelQuestaoQuiz(Quiz quiz){
+        this.quiz.remove(quiz);
+    }
     public void addAlternativa(Alternativa alternativa) {
         this.alternativas.add(alternativa);
         alternativa.setQuestao(this);

@@ -2,10 +2,11 @@ package br.com.edu.ufersa.projeto_quiz.Service;
 
 import br.com.edu.ufersa.projeto_quiz.API.dto.AlunoDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizRespondidoDTO;
-import br.com.edu.ufersa.projeto_quiz.API.dto.RespostaDTO;
+import br.com.edu.ufersa.projeto_quiz.API.dto.RespostaInputDTO;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.QuizRespondido;
 import br.com.edu.ufersa.projeto_quiz.Model.entity.Resposta;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.RespostaRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,23 +20,25 @@ public class RespostaService {
 
     @Autowired
     public RespostaRepository respostaRepository;
+    @Autowired
+    private ModelMapper modelMapper;
 
-    public RespostaDTO create(RespostaDTO respostaDTO) {
-        Resposta resposta = Resposta.convert(respostaDTO);
+    public RespostaInputDTO create(RespostaInputDTO respostaAlunoDTO) {
+        Resposta resposta = modelMapper.map(respostaAlunoDTO, Resposta.class);
         respostaRepository.save(resposta);
-        return RespostaDTO.convert(resposta);
+        return modelMapper.map(resposta, RespostaInputDTO.class);
     }
-    public List<RespostaDTO> todasRespostaQuizRespondido(QuizRespondidoDTO quizRespondidoDTO) {
+    public List<RespostaInputDTO> todasRespostaQuizRespondido(QuizRespondidoDTO quizRespondidoDTO) {
 
-        return respostaRepository.findByQuizRespondido(QuizRespondido.convert(quizRespondidoDTO))
+        return respostaRepository.findByQuizRespondido(modelMapper.map(quizRespondidoDTO, QuizRespondido.class))
                 .stream()
-                .map(RespostaDTO::convert)
+                .map(x -> modelMapper.map(x, RespostaInputDTO.class))
                 .collect(Collectors.toList());
     }
-    public  List<RespostaDTO> respostasIncorretasQuizRespondido(QuizRespondidoDTO quizRespondidoDTO) {
-        return respostaRepository.findByQuizRespondidoAndStatusRespostaTrue(QuizRespondido.convert(quizRespondidoDTO))
+    public  List<RespostaInputDTO> respostasIncorretasQuizRespondido(QuizRespondidoDTO quizRespondidoDTO) {
+        return respostaRepository.findByQuizRespondidoAndStatusRespostaTrue(modelMapper.map(quizRespondidoDTO, QuizRespondido.class))
                 .stream()
-                .map(RespostaDTO::convert)
+                .map(x -> modelMapper.map(x, RespostaInputDTO.class))
                 .collect(Collectors.toList());
     }
     // calculo do tempo medio de resposta do aluno

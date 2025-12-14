@@ -202,8 +202,8 @@ public class QuizService {
         if (!questao.getDisciplina().equals(quiz.getDisciplina()))
             throw new BusinessLogicException("Apenas questões da disciplina podem ser adicionadas ao quiz.");
 
-        quiz.addQuestao(questao);
-        repository.save(quiz);
+        questao.addRelQuestaoQuiz(quiz);
+        questaoRepository.save(questao);
         return mapper.map(quiz, QuizDTOResponse.class);
     }
 

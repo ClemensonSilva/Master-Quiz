@@ -1,10 +1,10 @@
 package br.com.edu.ufersa.projeto_quiz.Model.entity;
 
-import br.com.edu.ufersa.projeto_quiz.API.dto.RespostaDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.type.NumericBooleanConverter;
 
 import java.util.Objects;
 
@@ -23,28 +23,22 @@ public class Resposta {
     @JoinColumn(nullable = false, name = "questao_id")
     private Questao questao;
 
-    @OneToOne
-    @JoinColumn(nullable = false,name = "alternativa_escolhida_id", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "alternativa_escolhida_id", referencedColumnName = "id")
     private Alternativa alternativaEscolhida;
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "quiz_respondido_id")
     private QuizRespondido quizRespondido;
 
-    @Column(name = "status_resposta")
-    private boolean statusResposta;
+    @Column(name = "status_resposta",nullable = false)
+    @Convert(converter = NumericBooleanConverter.class)
+    private Boolean statusResposta;
 
     @Column(name = "tempo_resposta")
     private Long tempoResposta;
 
-    public static Resposta convert(RespostaDTO respostaDTO) {
-        Resposta resposta = new Resposta();
-        resposta.setId(respostaDTO.getId());
-        resposta.setQuestao(respostaDTO.getQuestao());
-        resposta.setTempoResposta(respostaDTO.getTempoResposta());
-        resposta.setAlternativaEscolhida(respostaDTO.getAlternativaEscolhida());
-        return resposta;
-    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     List<Aluno> findByDisciplinas(Disciplina disciplina);
+
+    Aluno findAlunoById(Long id);
 }

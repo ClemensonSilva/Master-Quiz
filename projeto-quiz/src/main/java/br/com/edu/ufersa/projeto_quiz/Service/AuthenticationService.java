@@ -8,12 +8,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class AuthenticationService {
@@ -41,13 +43,13 @@ public class AuthenticationService {
     }
 
     // adiciona o token quando o browser faz a requisição ao servidor
-    public static void addToken(HttpServletResponse res, String email){
-        System.out.println("addToken do AuthenticationService!");
-
+    public static void addToken(HttpServletResponse res, String email, String role){
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + EXPIRATIONTIME);
+
         String JwtToken = Jwts.builder()
                 .subject(email)
+                .claim("role", role) // <--- GRAVA A ROLE NO TOKEN
                 .issuedAt(now)
                 .expiration(expirationDate)
                 .signWith(SECRETKEY)
@@ -56,9 +58,8 @@ public class AuthenticationService {
         res.addHeader("Authorization", PREFIX + " " + JwtToken);
         res.addHeader("Access-Control-Expose-Headers", "Authorization");
     }
-    // verifica o token após o browser enviar uma requisição ao servidor. Verifica se o token é válido para a requisição
+
     public static Authentication getAuthentication (HttpServletRequest request) {
-        System.out.println("getAuthentication do authenticationService");
         String token = request.getHeader("Authorization");
         if (token != null) {
             if (token.startsWith(PREFIX)) token = token.substring(PREFIX.length()).trim();
@@ -70,15 +71,22 @@ public class AuthenticationService {
                         .build()
                         .parseSignedClaims(token)
                         .getPayload();
-                String email = claims.get("sub", String.class);
-                if (email != null)
-                    return new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
+
+                String email = claims.getSubject();
+                String role = claims.get("role", String.class);
+
+                if (email != null) {
+                    String roleSpring = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+
+                    return new UsernamePasswordAuthenticationToken(
+                            email,
+                            null,
+                            List.of(new SimpleGrantedAuthority(roleSpring))
+                    );
+                }
             }
-            catch (ExpiredJwtException ex) {
-                System.out.println("Token expirado: " + ex.getMessage());
-                return null; // ou lançar exceção customizada
-            } catch (JwtException ex) {
-                System.out.println("Token inválido: " + ex.getMessage());
+            catch (Exception ex) {
+                System.out.println("Erro no token: " + ex.getMessage());
                 return null;
             }
         }

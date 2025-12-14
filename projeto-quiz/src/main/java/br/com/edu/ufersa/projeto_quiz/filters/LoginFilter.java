@@ -33,11 +33,24 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     }
 
+    @Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res,
                                             FilterChain chain, Authentication auth)
             throws IOException, ServletException {
-        AuthenticationService.addToken(res, auth.getName());
-        System.out.println("successAuthentication do LoginFilter");
+
+        org.springframework.security.core.userdetails.UserDetails userData =
+                (org.springframework.security.core.userdetails.UserDetails) auth.getPrincipal();
+
+        String email = userData.getUsername();
+
+        String role = userData.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .findFirst()
+                .orElse("ALUNO");
+
+        AuthenticationService.addToken(res, email, role);
+
+        System.out.println("successAuthentication do LoginFilter: Login realizado para " + email + " com cargo " + role);
     }
 
 }

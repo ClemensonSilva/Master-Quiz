@@ -5,18 +5,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Set;
-
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
-
-public class QuizRespondidoDTO {
-    private Long id;
-    private QuizDTOResponse quiz;
-    private Set<RespostaInputDTO> respostasDTO;
-
-
-
+@ToString
+public class RespostaInputDTO {
+    private Long questaoId;
+    private Long alternativaId;
+    private long tempoResposta;
 }

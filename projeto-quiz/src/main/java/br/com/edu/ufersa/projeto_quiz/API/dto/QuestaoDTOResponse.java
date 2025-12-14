@@ -1,6 +1,5 @@
 package br.com.edu.ufersa.projeto_quiz.API.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
