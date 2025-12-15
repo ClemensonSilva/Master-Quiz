@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class AuthenticationService {
 
         String JwtToken = Jwts.builder()
                 .subject(email)
-                .claim("role", role) // <--- GRAVA A ROLE NO TOKEN
+                .claim("role", role)
                 .issuedAt(now)
                 .expiration(expirationDate)
                 .signWith(SECRETKEY)

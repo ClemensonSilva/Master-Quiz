@@ -84,9 +84,21 @@ public class UsuarioController {
      * @throws ResourceNotFound se o aluno não existir.
      */
     @GetMapping("/alunos/{id}")
-    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<ReturnAlunoDTO> getAluno(@PathVariable Long id) throws ResourceNotFound {
         ReturnAlunoDTO aluno = service.getAluno(id);
+        aluno.add(linkTo(methodOn(UsuarioController.class).getAlunos()).withRel("allAlunos"));
+        return ResponseEntity.ok(aluno);
+    }
+    /**
+     * Retorna um aluno específico pelo seu email.
+     *
+     * @param email email do aluno.
+     * @return aluno encontrado com link para listar todos os alunos.
+     * @throws ResourceNotFound se o professor não existir.
+     */
+    @GetMapping("/alunos/email/{email}")
+    public ResponseEntity<ReturnAlunoDTO> getAlunoByEmail(@PathVariable String email) throws ResourceNotFound {
+        ReturnAlunoDTO aluno = service.getAlunoByEmail(email);
         aluno.add(linkTo(methodOn(UsuarioController.class).getAlunos()).withRel("allAlunos"));
         return ResponseEntity.ok(aluno);
     }
@@ -104,6 +116,19 @@ public class UsuarioController {
         professor.add(linkTo(methodOn(UsuarioController.class).getProfessores()).withRel("allprofessores"));
         return ResponseEntity.ok(professor);
     }
+    /**
+     * Retorna um professor específico pelo seu email.
+     *
+     * @param email email do professor.
+     * @return professor encontrado com link para listar todos os professores.
+     * @throws ResourceNotFound se o professor não existir.
+     */
+    @GetMapping("/professores/email/{email}")
+    public ResponseEntity<ReturnProfessorDTO> getProfessorByEmail(@PathVariable String email) throws ResourceNotFound {
+        ReturnProfessorDTO professor = service.getProfessorByEmail(email);
+        professor.add(linkTo(methodOn(UsuarioController.class).getProfessores()).withRel("allprofessores"));
+        return ResponseEntity.ok(professor);
+    }
 
     /**
      * Lista todas as disciplinas associadas a um professor.
@@ -113,8 +138,10 @@ public class UsuarioController {
      * @throws ResourceNotFound se o professor ou disciplinas não forem encontrados.
      */
     @GetMapping("/professores/{id}/disciplinas")
-    public ResponseEntity<List<DisciplinaDTOResponse>> getDisciplinasByProfessor(@PathVariable Long id) throws ResourceNotFound {
-        List<DisciplinaDTOResponse> disciplinas = service.disciplinasByUser(id);
+    public ResponseEntity<List<DisciplinaDTOResponse>> getDisciplinasByProfessor(@PathVariable Long id,
+                                                                                 @RequestParam(required = false) String nome
+    ) throws ResourceNotFound {
+        List<DisciplinaDTOResponse> disciplinas = service.disciplinasByUser(id, nome);
 
         for (DisciplinaDTOResponse disciplina : disciplinas) {
             disciplina.add(linkTo(methodOn(DisciplinaController.class).findById(disciplina.getId())).withSelfRel());
@@ -128,14 +155,17 @@ public class UsuarioController {
 
     /**
      * Lista todas as disciplinas associadas a um aluno.
+     * Permite que o aluno também faça pesquisas usando o nome da disciplina
      *
      * @param id identificador do aluno.
      * @return lista de disciplinas com links básicos.
      * @throws ResourceNotFound se o aluno não existir.
      */
     @GetMapping("/alunos/{id}/disciplinas")
-    public ResponseEntity<List<DisciplinaDTOResponse>> getDisciplinasByAluno(@PathVariable Long id) throws ResourceNotFound {
-        List<DisciplinaDTOResponse> disciplinas = service.disciplinasByUser(id);
+    public ResponseEntity<List<DisciplinaDTOResponse>> getDisciplinasByAluno(@PathVariable Long id,
+                                                                             @RequestParam(required = false) String nome
+    ) throws ResourceNotFound {
+        List<DisciplinaDTOResponse> disciplinas = service.disciplinasByUser(id, nome);
 
         for (DisciplinaDTOResponse disciplina : disciplinas) {
             disciplina.add(linkTo(methodOn(DisciplinaController.class).findById(disciplina.getId())).withSelfRel());
@@ -143,6 +173,7 @@ public class UsuarioController {
 
         return ResponseEntity.ok(disciplinas);
     }
+
 
     /**
      * Realiza a matrícula de um aluno em uma disciplina.

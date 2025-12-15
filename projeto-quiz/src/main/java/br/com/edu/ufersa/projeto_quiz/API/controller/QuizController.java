@@ -1,5 +1,6 @@
 package br.com.edu.ufersa.projeto_quiz.API.controller;
 
+import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizDTOResponse;
 import br.com.edu.ufersa.projeto_quiz.Service.QuizService;
 import br.com.edu.ufersa.projeto_quiz.exception.BusinessLogicException;

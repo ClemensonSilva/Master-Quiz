@@ -105,10 +105,6 @@ public class QuizService {
         return disciplinaService.getDisciplinaByQuiz(id);
     }
 
-    public DisciplinaDTOResponse getDisciplinaByQuiz(long id) throws ResourceNotFound {
-        DisciplinaDTOResponse disciplina = disciplinaService.getDisciplinaByQuiz(id);
-        return disciplina;
-    }
 
     /**
      * Salva um novo quiz e associa-o a uma disciplina.

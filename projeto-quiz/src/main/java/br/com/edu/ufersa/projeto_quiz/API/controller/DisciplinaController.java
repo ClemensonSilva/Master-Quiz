@@ -17,7 +17,7 @@ import java.util.List;
  * <p>Este controlador expõe endpoints para listar, consultar, criar, editar e remover disciplinas,
  * além de retornar alunos, professores e quizzes vinculados a uma disciplina específica.</p>
  *
- * @author
+ * @Clemerson
  */
 @RestController
 @RequestMapping("/api/v1/disciplinas")
@@ -31,10 +31,11 @@ public class DisciplinaController {
      *
      * @return lista de {@link DisciplinaDTOResponse} com status 200 OK.
      */
-    @GetMapping()
-    public ResponseEntity<List<DisciplinaDTOResponse>> findAll() {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
-    }
+//    TODO verificar necessidade desse endpoint
+//    @GetMapping()
+//    public ResponseEntity<List<DisciplinaDTOResponse>> findAll() {
+//        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+//    }
 
     /**
      * Busca uma disciplina pelo ID informado.
@@ -47,9 +48,20 @@ public class DisciplinaController {
     public ResponseEntity<DisciplinaDTOResponse> findById(@PathVariable Long id) {
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
+    /**
+     * Busca uma lista de disciplinas pelo nome e usuario informado.
+     *
+     * @param nome da disciplina.
+     * @return representação das disciplinas encontradas.
+     * @throws ResourceNotFound caso a disciplina não exista.
+     */
+    @GetMapping()
+    public ResponseEntity<List<DisciplinaDTOResponse>> findByNome(@RequestParam long usuarioId, @RequestParam String nome) throws ResourceNotFound {
+        return new ResponseEntity<>(service.findByNome(nome, usuarioId), HttpStatus.OK);
+    }
 
     /**
-     * Retorna todos os alunos matriculados em uma disciplina específica.
+     * Retorna todos os alunos matriculados numa disciplina específica.
      *
      * @param id identificador da disciplina.
      * @return lista de alunos.

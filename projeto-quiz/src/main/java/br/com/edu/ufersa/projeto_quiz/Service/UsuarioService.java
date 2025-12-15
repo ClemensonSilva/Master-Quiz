@@ -252,20 +252,26 @@ public class UsuarioService {
      * @return lista de disciplinas em formato DTO
      * @throws ResourceNotFound caso o usuário não exista ou não esteja associado a disciplinas
      */
-    public List<DisciplinaDTOResponse> disciplinasByUser(long userId) throws ResourceNotFound {
+    public List<DisciplinaDTOResponse> disciplinasByUser(long userId, String nome) throws ResourceNotFound {
         Usuario user = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFound("Usuário não encontrado"));
 
         List<Disciplina> disciplinas = new ArrayList<>();
-
+        // TODO melhorar lógica e passar decisao para o Repository e unificar o metodo para coletar discciplina para o usuario, mandando o nome ou nao
         if (user instanceof Professor) {
-            disciplinas = disciplinaRepository.findDisciplinaByProfessor((Professor) user);
+            if(nome == null  ){
+                disciplinas = disciplinaRepository.findDisciplinaByProfessor((Professor) user);
+            }
+            else{
+            disciplinas = disciplinaRepository.searchDisciplinaByProfessorAndNome((Professor) user, nome);
+            }
         } else if (user instanceof Aluno) {
-            disciplinas = disciplinaRepository.findDisciplinaByAluno((Aluno) user);
-        }
-
-        if (disciplinas == null || disciplinas.isEmpty()) {
-            throw new ResourceNotFound("Nenhuma disciplina encontrada para o usuário: " + user.getId());
+            if(nome == null){
+                disciplinas = disciplinaRepository.findDisciplinaByAluno((Aluno) user);
+            }
+            else{
+                disciplinas = disciplinaRepository.searchDisciplinaByAlunoAndNome((Aluno) user, nome);
+            }
         }
 
         return disciplinas.stream()
@@ -348,5 +354,18 @@ public class UsuarioService {
         disciplina.setNome(disciplinaDTO.getNome());
 
         return mapper.map(disciplina, DisciplinaDTOResponse.class);
+    }
+
+    public ReturnAlunoDTO getAlunoByEmail(String email) throws ResourceNotFound {
+        Aluno aluno = alunoRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFound("Aluno não encontrado"));
+        return mapper.map(aluno, ReturnAlunoDTO.class);
+    }
+
+    public ReturnProfessorDTO getProfessorByEmail(String email) throws ResourceNotFound {
+        Professor professor = professorRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFound("Professor não encontrado"));
+
+        return mapper.map(professor, ReturnProfessorDTO.class);
     }
 }

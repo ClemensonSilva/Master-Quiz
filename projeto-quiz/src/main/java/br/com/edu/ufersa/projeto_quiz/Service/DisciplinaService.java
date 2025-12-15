@@ -6,11 +6,15 @@ import br.com.edu.ufersa.projeto_quiz.Model.entity.Disciplina;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.DisciplinaRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.ProfessorRepository;
 import br.com.edu.ufersa.projeto_quiz.Model.repository.QuestaoRepository;
+import br.com.edu.ufersa.projeto_quiz.Model.repository.UsuarioRepository;
 import br.com.edu.ufersa.projeto_quiz.exception.ResourceNotFound;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,9 +28,8 @@ public class DisciplinaService {
 
     // TODO apenas disciplina deve acessar o proprio repository, os demais acessam os services de suas classes
     private final DisciplinaRepository disciplinaRepository;
-    private final ProfessorRepository professorRepository;
     private final UsuarioService usuarioService;
-    private final QuestaoRepository questaoRepository;
+    private final UsuarioRepository usuarioRepository;
     private final ModelMapper mapper;
     private final QuizService quizService;
     private final ModelMapper modelMapper;
@@ -35,24 +38,21 @@ public class DisciplinaService {
      * Construtor para injeção de dependências do service.
      *
      * @param disciplinaRepository repositório de disciplinas
-     * @param professorRepository repositório de professores
      * @param usuarioService service responsável pelos usuários (alunos e professores)
      * @param mapper mapper genérico para conversão de entidades e DTOs
      * @param quizService service responsável por operações relacionadas a quizzes
-     * @param questaoRepository repositório de questões
      * @param modelMapper outro mapper utilizado internamente
      */
     @Autowired
-    public DisciplinaService(DisciplinaRepository disciplinaRepository, ProfessorRepository professorRepository,
-                             UsuarioService usuarioService, ModelMapper mapper, QuizService quizService,
-                             QuestaoRepository questaoRepository, ModelMapper modelMapper) {
+    public DisciplinaService(DisciplinaRepository disciplinaRepository,
+                             UsuarioService usuarioService, UsuarioRepository usuarioRepository,
+                             ModelMapper mapper, QuizService quizService, ModelMapper modelMapper) {
 
         this.disciplinaRepository = disciplinaRepository;
-        this.professorRepository = professorRepository;
+        this.usuarioRepository = usuarioRepository;
         this.mapper = mapper;
         this.quizService = quizService;
         this.usuarioService = usuarioService;
-        this.questaoRepository = questaoRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -61,14 +61,16 @@ public class DisciplinaService {
      *
      * @return lista de {@link DisciplinaDTOResponse} representando todas as disciplinas
      */
-    public List<DisciplinaDTOResponse> findAll() {
-        List<Disciplina> disciplinas = disciplinaRepository.findAll();
 
-        return disciplinas
-                .stream()
-                .map((x) -> mapper.map(x, DisciplinaDTOResponse.class))
-                .collect(Collectors.toList());
-    }
+//  Esta causando inconsistencias e nao esta sendo utilizada.
+//    public List<DisciplinaDTOResponse> findAll() {
+//        List<Disciplina> disciplinas = disciplinaRepository.findAll();
+//
+//        return disciplinas
+//                .stream()
+//                .map((x) -> mapper.map(x, DisciplinaDTOResponse.class))
+//                .collect(Collectors.toList());
+//    }
 
     /**
      * Busca uma disciplina pelo seu ID.
@@ -212,5 +214,33 @@ public class DisciplinaService {
         disciplina.setNome(disciplinaDTO.getNome());
         disciplinaRepository.save(disciplina);
         return mapper.map(disciplina, DisciplinaDTOResponse.class);
+    }
+
+    /**
+     * Retorna lista com disciplinas baseado na variavel nome e no usuario
+     *
+     * @param nome da disciplina
+     * @return Lista de DTOS das disciplinas encontradas
+     * @throws ResourceNotFound
+     */
+    public List<DisciplinaDTOResponse> findByNome(String nome,  long usuarioId) throws ResourceNotFound {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new ResourceNotFound("Usuário não encontrado"));
+
+        List<Disciplina> disciplinas = new ArrayList<>();
+
+        if (usuario instanceof Professor) {
+            disciplinas = disciplinaRepository.searchDisciplinaByProfessorAndNome((Professor) usuario, nome);
+        } else if (usuario instanceof Aluno) {
+            disciplinas = disciplinaRepository.searchDisciplinaByAlunoAndNome((Aluno) usuario, nome);
+        }
+
+        if (disciplinas.isEmpty()) {
+            throw new ResourceNotFound("Disciplina não encontrada para " + nome);
+        }
+        return disciplinas
+                .stream()
+                .map((x) -> mapper.map(x, DisciplinaDTOResponse.class))
+                .collect(Collectors.toList());
     }
 }
