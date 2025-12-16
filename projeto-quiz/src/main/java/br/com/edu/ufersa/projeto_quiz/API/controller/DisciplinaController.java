@@ -59,7 +59,11 @@ public class DisciplinaController {
     public ResponseEntity<List<DisciplinaDTOResponse>> findByNome(@RequestParam long usuarioId, @RequestParam String nome) throws ResourceNotFound {
         return new ResponseEntity<>(service.findByNome(nome, usuarioId), HttpStatus.OK);
     }
-
+    // TODO implementar metodo que retorne as disciplinas que nao estao matriculadas pelo usuario
+    @GetMapping("/alunos/{alunoId}/disponiveis")
+    public ResponseEntity<List<DisciplinaDTOResponse>> findDisciplinasDisponiveis(@PathVariable long alunoId) throws ResourceNotFound {
+        return new ResponseEntity<>(service.findDisciplinasDisponiveis(alunoId), HttpStatus.OK);
+    }
     /**
      * Retorna todos os alunos matriculados numa disciplina específica.
      *

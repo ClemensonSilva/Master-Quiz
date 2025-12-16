@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class DisciplinaDTOResponse extends RepresentationModel {
     private long id;
     private String nome;
-
+    private ReturnProfessorDTO professor;
 }
 
 

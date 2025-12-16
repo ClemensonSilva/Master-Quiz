@@ -24,6 +24,13 @@ public interface DisciplinaRepository extends JpaRepository<Disciplina, Long> {
     Disciplina findDisciplinaById(Long id);
 
     Disciplina findDisciplinaByNomeLike(String nome);
+    @Query("""
+       SELECT d
+       FROM Disciplina d
+       LEFT JOIN d.aluno a WITH a.id = :alunoId
+       WHERE a IS NULL
+    """)
+    List<Disciplina> findDisciplinasNaoPertencentesAoAluno(@Param("alunoId") Long alunoId);
 
     @Query("""
     select d

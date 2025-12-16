@@ -243,4 +243,26 @@ public class DisciplinaService {
                 .map((x) -> mapper.map(x, DisciplinaDTOResponse.class))
                 .collect(Collectors.toList());
     }
-}
+    /**
+     * Retorna lista com disciplinas em que o aluno ainda não está matriculado
+     *
+     * @param alunoId do aluno
+     * @return Lista de DTOS das disciplinas encontradas
+     * @throws ResourceNotFound
+     */
+    public List<DisciplinaDTOResponse> findDisciplinasDisponiveis(long alunoId) throws ResourceNotFound {
+        Optional<Usuario> aluno = usuarioRepository.findById(alunoId);
+        if(aluno.isEmpty()){
+            throw new ResourceNotFound("Aluno não encontrado.");
+        }
+
+        List<Disciplina> disciplinasDisponiveis = disciplinaRepository.findDisciplinasNaoPertencentesAoAluno(alunoId);
+
+        return disciplinasDisponiveis
+                .stream()
+                .map((x) -> mapper.map(x, DisciplinaDTOResponse.class))
+                .collect(Collectors.toList());
+    }
+
+    }
+
