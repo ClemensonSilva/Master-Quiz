@@ -23,11 +23,15 @@ import java.util.Set;
  * @author Clemerson
  */
 public class DisciplinaDTO {
+    // TODO ReTIRAR professorId daqui
     @NotBlank(message = "A disciplina precisa de um nome definido!")
     @Size(max = 25, message = "O nome da disciplina deve ter até 25 caracteres!")
     private String nome;
     @NotEmpty(message = "A disciplina precisa de professor associado!")
     private Long professorId;
+    @NotBlank()
+    @Size(max = 400)
+    private String descricao;
 
 
 }

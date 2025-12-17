@@ -352,7 +352,9 @@ public class UsuarioService {
 
         Disciplina disciplina = new Disciplina();
         disciplina.setNome(disciplinaDTO.getNome());
-
+        disciplina.setDescricao(disciplinaDTO.getDescricao());
+        disciplina.setProfessor(professor);
+        disciplinaRepository.save(disciplina);
         return mapper.map(disciplina, DisciplinaDTOResponse.class);
     }
 

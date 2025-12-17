@@ -42,6 +42,9 @@ public class Disciplina {
     @Column(nullable = false, length = 100)
     private String nome;
 
+    @Column(nullable = false, length = 400)
+    private String descricao;
+
     @OneToMany(mappedBy = "disciplina",cascade = CascadeType.REMOVE)
     private List<Quiz> quizes;
 

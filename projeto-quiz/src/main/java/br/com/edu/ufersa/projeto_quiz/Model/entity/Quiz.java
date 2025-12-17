@@ -23,7 +23,8 @@ public class Quiz {
 
     @Column(nullable = false, length = 100)
     private String titulo;
-
+    @Column(nullable = false, length = 400)
+    private String descricao;
     @ManyToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private Set<Questao> questoes;
 
