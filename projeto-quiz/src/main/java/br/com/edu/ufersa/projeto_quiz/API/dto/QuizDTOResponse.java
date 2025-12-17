@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @ToString
 public class QuizDTOResponse extends RepresentationModel<QuizDTOResponse> {
     private long id;
+    private long disciplinaId;
     private String titulo;
     private List<QuestaoDTOResponse> questoes;
 }

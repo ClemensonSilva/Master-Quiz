@@ -1,5 +1,6 @@
 package br.com.edu.ufersa.projeto_quiz.Service;
 
+import br.com.edu.ufersa.projeto_quiz.API.controller.QuizRespondidoController;
 import br.com.edu.ufersa.projeto_quiz.API.dto.AlunoDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizRespondidoDTO;
 import br.com.edu.ufersa.projeto_quiz.API.dto.QuizRespondidoInputDTO;
@@ -151,5 +152,25 @@ public class QuizRespondidoService {
         quizRespondidoRepository.save(quizRespondido);
         return modelMapper.map(quizRespondido, QuizRespondidoDTO.class);
     }
+
+    public QuizRespondidoDTO findUltimaTentativa(long disciplinaId, long quizId, long alunoId) throws BusinessLogicException, ResourceNotFound {
+        Aluno aluno = alunoRepository.findAlunoById(alunoId);
+
+        if (aluno == null) {
+            throw new BusinessLogicException("Aluno precisa estar logado para responder");
+        }
+        Quiz quiz = quizRepository.findQuizById(quizId);
+        if (quiz == null) {
+            throw new ResourceNotFound("Quiz não encontrado");
+        }
+
+        QuizRespondido ultimaTentaiva = quizRespondidoRepository.findQuizRespondidoByAlunoAndQuiz(aluno, quiz);
+        if (ultimaTentaiva == null) {
+            throw new BusinessLogicException("Aluno ainda não resolveu o quiz.");
+        }
+        return modelMapper.map(ultimaTentaiva, QuizRespondidoDTO.class);
+    }
+
+
     // TODO criar meio de calcular a pontuacao de um aluno baseada em suas respostas dos quizes
 }

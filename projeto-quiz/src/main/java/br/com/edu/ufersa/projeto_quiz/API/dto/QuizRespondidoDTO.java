@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -15,8 +16,7 @@ import java.util.Set;
 public class QuizRespondidoDTO {
     private Long id;
     private QuizDTOResponse quiz;
+    private Double pontuacaoFinal;
+    private LocalDateTime dataTentativa;
     private Set<RespostaInputDTO> respostasDTO;
-
-
-
 }

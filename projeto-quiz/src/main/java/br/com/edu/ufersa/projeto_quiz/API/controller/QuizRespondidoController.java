@@ -27,4 +27,10 @@ public class QuizRespondidoController {
 
         return new ResponseEntity<>(quizRespondidoService.responderQuiz(dto, quizId), HttpStatus.CREATED);
     }
+    @GetMapping("/alunos/{alunoId}")
+    public ResponseEntity<QuizRespondidoDTO> findUltimaTentativaQuiz(@PathVariable long disciplinaId,
+                                                                            @PathVariable long quizId,
+                                                                            @PathVariable long alunoId) throws ResourceNotFound, BusinessLogicException {
+        return new ResponseEntity<>(quizRespondidoService.findUltimaTentativa(disciplinaId, quizId, alunoId), HttpStatus.OK);
+    }
 }
