@@ -29,12 +29,14 @@ public class QuestaoService {
     private final QuestaoRepository repository;
     private final DisciplinaRepository disciplinaRepository;
     private final ModelMapper mapper;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public QuestaoService(QuestaoRepository repository, DisciplinaRepository disciplinaRepository, ModelMapper mapper) {
+    public QuestaoService(QuestaoRepository repository, DisciplinaRepository disciplinaRepository, ModelMapper mapper, ModelMapper modelMapper) {
         this.repository = repository;
         this.disciplinaRepository = disciplinaRepository;
         this.mapper = mapper;
+        this.modelMapper = modelMapper;
     }
 
 
@@ -145,12 +147,18 @@ public class QuestaoService {
      */
     @Transactional
     public QuestaoDTOResponse edit(long id, @Valid QuestaoDTO dto) throws ResourceNotFound {
-        Questao questao = repository.findQuestaoById(id);
+        Questao questao = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Questão não encontrada"));
 
-        if (questao == null) {
-            throw new ResourceNotFound("Questão não encontrada");
+        questao.setDescricao(dto.getDescricao());
+
+        questao.getAlternativas().clear();
+
+        for (AlternativaDTO altDto : dto.getAlternativas()) {
+            Alternativa novaAlt = modelMapper.map(altDto, Alternativa.class);
+            novaAlt.setQuestao(questao);
+            questao.getAlternativas().add(novaAlt);
         }
-        // TODO implementar lógica de edição de perguntas
 
         repository.save(questao);
         return mapper.map(questao, QuestaoDTOResponse.class);

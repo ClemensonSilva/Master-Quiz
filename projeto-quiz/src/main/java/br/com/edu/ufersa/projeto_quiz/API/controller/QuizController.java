@@ -59,6 +59,7 @@ public class QuizController {
         for (QuizDTOResponse quiz : quizList) {
             long quizId = quiz.getId();
             quiz.add(linkTo(methodOn(QuizController.class).findById(quizId, disciplinaId)).withSelfRel());
+            quiz.add(linkTo(methodOn(QuizController.class).delete(quiz.getId(), quiz.getDisciplinaId())).withRel("delete"));
             adicionarLinkDisciplina(quiz, disciplinaId);
         }
 

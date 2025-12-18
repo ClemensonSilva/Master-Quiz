@@ -17,5 +17,6 @@ public class QuizDTOResponse extends RepresentationModel<QuizDTOResponse> {
     private long id;
     private long disciplinaId;
     private String titulo;
+    private String descricao;
     private List<QuestaoDTOResponse> questoes;
 }

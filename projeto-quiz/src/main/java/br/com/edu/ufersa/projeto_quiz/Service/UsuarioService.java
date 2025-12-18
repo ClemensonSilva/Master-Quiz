@@ -203,6 +203,7 @@ public class UsuarioService {
 
         usuarioExistente.setNome(dto.getNome());
         usuarioExistente.setEmail(dto.getEmail());
+        usuarioExistente.setSenha(        passwordEncoder.encode(dto.getSenha()));
 
         Aluno alunoSalvo = (Aluno) usuarioRepository.save(usuarioExistente);
         return mapper.map(alunoSalvo, ReturnAlunoDTO.class);
@@ -231,7 +232,7 @@ public class UsuarioService {
 
         usuarioExistente.setNome(dto.getNome());
         usuarioExistente.setEmail(dto.getEmail());
-
+        usuarioExistente.setSenha(        passwordEncoder.encode(dto.getSenha()));
         Professor professorSalvo = (Professor) usuarioRepository.save(usuarioExistente);
         return mapper.map(professorSalvo, ReturnProfessorDTO.class);
     }
